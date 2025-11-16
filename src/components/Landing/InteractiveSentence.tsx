@@ -68,30 +68,35 @@ export const InteractiveSentence = ({
           {selectedIntent}
         </button>
         <span>for</span>
-        <div className="relative inline-flex items-baseline min-w-[280px] justify-center">
+        <div className="relative inline-flex items-baseline justify-center">
           <AnimatePresence mode="wait">
-            <motion.input
+            <motion.span
               key={isEditing ? "editing" : currentGame}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              type="text"
-              value={selectedGame}
-              onChange={(e) => setSelectedGame(e.target.value)}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              placeholder="Enter game name..."
-              className="bg-transparent outline-none gradient-text font-semibold text-center border-b-2 border-dotted border-accent-start/60 cursor-text px-2 pb-1 w-full placeholder:text-foreground/50 placeholder:text-base"
-            />
+              className="inline-flex items-baseline"
+            >
+              <input
+                type="text"
+                value={selectedGame}
+                onChange={(e) => setSelectedGame(e.target.value)}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                placeholder="Enter game name..."
+                style={{ width: `${Math.max(selectedGame.length * 0.6, 8)}em` }}
+                className="bg-transparent outline-none gradient-text font-semibold text-center border-b-2 border-accent-start/60 cursor-text px-2 pb-1 placeholder:text-foreground/50 placeholder:text-base"
+              />
+              <motion.span
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                className="text-accent-start ml-1"
+              >
+                |
+              </motion.span>
+            </motion.span>
           </AnimatePresence>
-          <motion.span
-            animate={{ opacity: [1, 0, 1] }}
-            transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
-            className="text-accent-start ml-1 absolute right-0"
-          >
-            |
-          </motion.span>
         </div>
       </div>
 
