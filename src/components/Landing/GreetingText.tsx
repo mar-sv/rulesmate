@@ -6,7 +6,7 @@ export const GreetingText = () => {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="text-4xl md:text-5xl lg:text-6xl font-bold text-center text-foreground mb-8"
+      className="text-2xl md:text-3xl text-foreground/90 text-center mb-4"
     >
       Hey! How can I help you?
     </motion.h1>

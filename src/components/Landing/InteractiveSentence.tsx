@@ -38,6 +38,10 @@ export const InteractiveSentence = ({ onSubmit }: InteractiveSentenceProps) => {
     setCurrentGameIndex(nextIndex);
   };
 
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.select();
+  };
+
   return (
     <motion.div
       initial={{ y: 20, opacity: 0 }}
@@ -45,7 +49,7 @@ export const InteractiveSentence = ({ onSubmit }: InteractiveSentenceProps) => {
       transition={{ duration: 0.6, delay: 0.2 }}
       className="text-center space-y-8"
     >
-      <div className="text-2xl md:text-3xl text-foreground/90 flex flex-wrap items-center justify-center gap-2 md:gap-3">
+      <div className="text-4xl md:text-5xl font-bold text-white flex flex-wrap items-center justify-center gap-2 md:gap-3">
         <span>I want</span>
         <button
           onClick={handleIntentClick}
@@ -54,19 +58,25 @@ export const InteractiveSentence = ({ onSubmit }: InteractiveSentenceProps) => {
           {selectedIntent}
         </button>
         <span>for</span>
-        <div className="relative inline-block min-w-[200px] md:min-w-[280px]">
+        <div className="relative inline-block">
           <AnimatePresence mode="wait">
-            <motion.button
+            <motion.div
               key={selectedGame}
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              onClick={handleGameClick}
-              className="gradient-text font-semibold hover:scale-105 transition-transform cursor-pointer px-2 py-1 rounded-lg hover:bg-accent/10"
+              className="inline-flex items-center gap-2 gradient-accent rounded-full px-4 py-2 shadow-soft"
             >
-              {selectedGame}
-            </motion.button>
+              <input
+                type="text"
+                value={selectedGame}
+                onChange={(e) => setSelectedGame(e.target.value)}
+                onFocus={handleFocus}
+                placeholder="Enter game name..."
+                className="bg-transparent outline-none font-semibold text-foreground w-[160px] placeholder:text-foreground/50 placeholder:text-sm"
+              />
+            </motion.div>
           </AnimatePresence>
         </div>
       </div>
