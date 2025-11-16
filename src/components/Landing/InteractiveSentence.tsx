@@ -17,18 +17,25 @@ export const InteractiveSentence = ({
 }: InteractiveSentenceProps) => {
   const [selectedGame, setSelectedGame] = useState(games[0]);
   const [currentGameIndex, setCurrentGameIndex] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
 
-  // Auto-rotate game names
+  const currentGame = games[currentGameIndex];
+
+  // Auto-rotate game names when not editing
   useEffect(() => {
+    if (isEditing) return;
+    
     const interval = setInterval(() => {
       setCurrentGameIndex((prev) => (prev + 1) % games.length);
     }, 2000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isEditing]);
 
   useEffect(() => {
-    setSelectedGame(games[currentGameIndex]);
-  }, [currentGameIndex]);
+    if (!isEditing) {
+      setSelectedGame(games[currentGameIndex]);
+    }
+  }, [currentGameIndex, isEditing]);
 
   const handleIntentClick = () => {
     const currentIndex = intents.indexOf(selectedIntent);
@@ -36,15 +43,13 @@ export const InteractiveSentence = ({
     setSelectedIntent(intents[nextIndex]);
   };
 
-  const handleGameClick = () => {
-    const currentIndex = games.indexOf(selectedGame);
-    const nextIndex = (currentIndex + 1) % games.length;
-    setSelectedGame(games[nextIndex]);
-    setCurrentGameIndex(nextIndex);
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsEditing(true);
+    e.target.select();
   };
 
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.target.select();
+  const handleBlur = () => {
+    setIsEditing(false);
   };
 
   return (
@@ -63,26 +68,30 @@ export const InteractiveSentence = ({
           {selectedIntent}
         </button>
         <span>for</span>
-        <div className="relative inline-block">
+        <div className="relative inline-flex items-baseline min-w-[280px] justify-center">
           <AnimatePresence mode="wait">
-            <motion.div
-              key={selectedGame}
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -20, opacity: 0 }}
+            <motion.input
+              key={isEditing ? "editing" : currentGame}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="inline-flex items-center gap-2 gradient-accent rounded-full px-4 py-2 shadow-soft"
-            >
-              <input
-                type="text"
-                value={selectedGame}
-                onChange={(e) => setSelectedGame(e.target.value)}
-                onFocus={handleFocus}
-                placeholder="Enter game name..."
-                className="bg-transparent outline-none font-semibold text-foreground w-[160px] placeholder:text-foreground/50 placeholder:text-sm"
-              />
-            </motion.div>
+              type="text"
+              value={selectedGame}
+              onChange={(e) => setSelectedGame(e.target.value)}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              placeholder="Enter game name..."
+              className="bg-transparent outline-none gradient-text font-semibold text-center border-b-2 border-dotted border-accent-start/60 cursor-text px-2 pb-1 w-full placeholder:text-foreground/50 placeholder:text-base"
+            />
           </AnimatePresence>
+          <motion.span
+            animate={{ opacity: [1, 0, 1] }}
+            transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+            className="text-accent-start ml-1 absolute right-0"
+          >
+            |
+          </motion.span>
         </div>
       </div>
 
