@@ -1,176 +1,185 @@
-import { motion } from "framer-motion";
-import { Pencil, ChevronDown, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Pencil } from "lucide-react";
+
+const games = ["Catan", "Terraforming Mars", "Azul", "Carcassonne"];
 
 const MockupComparison = () => {
-  const [game1, setGame1] = useState("Catan");
-  const [game2, setGame2] = useState("Catan");
-  const [game3, setGame3] = useState("Catan");
-  const [game4, setGame4] = useState("Catan");
-  const [isEditing2, setIsEditing2] = useState(false);
+  const [currentGameIndex, setCurrentGameIndex] = useState(0);
+  const [hoveredOption, setHoveredOption] = useState<number | null>(null);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentGameIndex((prev) => (prev + 1) % games.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const currentGame = games[currentGameIndex];
 
   return (
-    <div className="min-h-screen w-full px-8 py-12 space-y-8">
-      <div className="text-center mb-12">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Game Input Mockups</h1>
-        <p className="text-muted-foreground">Choose your preferred design</p>
+    <div className="min-h-screen w-full flex flex-col items-center justify-start px-4 py-12 gap-12">
+      <div className="text-center space-y-4">
+        <h1 className="text-4xl font-bold text-foreground">Game Input Mockups</h1>
+        <p className="text-muted-foreground">Subtle, clean options for editable rolling game names</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-        {/* Option 1: Inline Input Field */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-bga-surface border border-border/50 rounded-2xl p-8 space-y-6"
-        >
-          <div className="space-y-2">
-            <div className="inline-block px-3 py-1 bg-accent-start/20 rounded-full text-sm font-medium text-accent-start">
-              Option 1
-            </div>
-            <h3 className="text-xl font-semibold text-foreground">Inline Input Field</h3>
-            <p className="text-sm text-muted-foreground">Clean text input blended into sentence</p>
-          </div>
-
-          <div className="text-2xl text-foreground/90 flex flex-wrap items-center gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl w-full">
+        {/* Option 1: Underlined with Edit Icon on Hover */}
+        <div className="border border-border rounded-lg p-8 space-y-4 bg-card">
+          <h2 className="text-xl font-semibold text-foreground">Option 1: Underlined + Icon</h2>
+          <p className="text-sm text-muted-foreground">Subtle underline with edit icon appearing on hover</p>
+          
+          <div className="text-3xl md:text-4xl font-bold text-foreground flex flex-wrap items-center justify-center gap-2 md:gap-3">
             <span>I want</span>
-            <span className="gradient-text font-semibold">rules</span>
+            <span className="gradient-text">rules</span>
             <span>for</span>
-            <input
-              type="text"
-              value={game1}
-              onChange={(e) => setGame1(e.target.value)}
-              placeholder="type game here..."
-              className="bg-background/50 border-b-2 border-accent-start/40 focus:border-accent-start px-3 py-1 outline-none gradient-text font-semibold min-w-[200px] placeholder:text-muted-foreground placeholder:text-base"
-            />
-          </div>
-        </motion.div>
-
-        {/* Option 2: Highlighted Editable Text */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-bga-surface border border-border/50 rounded-2xl p-8 space-y-6"
-        >
-          <div className="space-y-2">
-            <div className="inline-block px-3 py-1 bg-accent-start/20 rounded-full text-sm font-medium text-accent-start">
-              Option 2
+            <div 
+              className="relative inline-flex items-baseline gap-1.5"
+              onMouseEnter={() => setHoveredOption(1)}
+              onMouseLeave={() => setHoveredOption(null)}
+            >
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={currentGame}
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -10, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="gradient-text border-b-2 border-accent-start/40 cursor-text px-1"
+                >
+                  {currentGame}
+                </motion.span>
+              </AnimatePresence>
+              <AnimatePresence>
+                {hoveredOption === 1 && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Pencil className="w-4 h-4 text-accent-start" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-            <h3 className="text-xl font-semibold text-foreground">Highlighted Editable</h3>
-            <p className="text-sm text-muted-foreground">Gradient text with edit icon</p>
           </div>
+        </div>
 
-          <div className="text-2xl text-foreground/90 flex flex-wrap items-center gap-2">
+        {/* Option 2: Dotted Underline with Blinking Cursor */}
+        <div className="border border-border rounded-lg p-8 space-y-4 bg-card">
+          <h2 className="text-xl font-semibold text-foreground">Option 2: Dotted + Cursor</h2>
+          <p className="text-sm text-muted-foreground">Dotted underline with subtle blinking cursor hint</p>
+          
+          <div className="text-3xl md:text-4xl font-bold text-foreground flex flex-wrap items-center justify-center gap-2 md:gap-3">
             <span>I want</span>
-            <span className="gradient-text font-semibold">rules</span>
+            <span className="gradient-text">rules</span>
             <span>for</span>
-            {isEditing2 ? (
-              <input
-                type="text"
-                value={game2}
-                onChange={(e) => setGame2(e.target.value)}
-                onBlur={() => setIsEditing2(false)}
-                autoFocus
-                className="bg-transparent border-b-2 border-accent-start gradient-text font-semibold min-w-[200px] outline-none px-2"
-              />
-            ) : (
-              <button
-                onClick={() => setIsEditing2(true)}
-                className="gradient-text font-semibold hover:scale-105 transition-transform px-2 py-1 rounded-lg hover:bg-accent/10 flex items-center gap-1 group"
+            <div className="relative inline-flex items-baseline">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={currentGame}
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -10, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="gradient-text border-b-2 border-dotted border-accent-start/60 cursor-text px-1"
+                >
+                  {currentGame}
+                </motion.span>
+              </AnimatePresence>
+              <motion.span
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                className="text-accent-start ml-0.5"
               >
-                {game2}
-                <Pencil className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </button>
-            )}
-          </div>
-        </motion.div>
-
-        {/* Option 3: Pill/Chip Style */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-bga-surface border border-border/50 rounded-2xl p-8 space-y-6"
-        >
-          <div className="space-y-2">
-            <div className="inline-block px-3 py-1 bg-accent-start/20 rounded-full text-sm font-medium text-accent-start">
-              Option 3
+                |
+              </motion.span>
             </div>
-            <h3 className="text-xl font-semibold text-foreground">Pill/Chip Style</h3>
-            <p className="text-sm text-muted-foreground">Game name in rounded chip</p>
           </div>
+        </div>
 
-          <div className="text-2xl text-foreground/90 flex flex-wrap items-center gap-2">
+        {/* Option 3: Subtle Gradient Background Glow */}
+        <div className="border border-border rounded-lg p-8 space-y-4 bg-card">
+          <h2 className="text-xl font-semibold text-foreground">Option 3: Gradient Glow</h2>
+          <p className="text-sm text-muted-foreground">Subtle gradient background that glows on hover</p>
+          
+          <div className="text-3xl md:text-4xl font-bold text-foreground flex flex-wrap items-center justify-center gap-2 md:gap-3">
             <span>I want</span>
-            <span className="gradient-text font-semibold">rules</span>
+            <span className="gradient-text">rules</span>
             <span>for</span>
-            <div className="inline-flex items-center gap-2 gradient-accent rounded-full px-4 py-1.5 shadow-soft">
-              <input
-                type="text"
-                value={game3}
-                onChange={(e) => setGame3(e.target.value)}
-                className="bg-transparent outline-none font-semibold text-foreground min-w-[120px]"
-              />
-              <button className="hover:scale-110 transition-transform">
-                <X className="w-4 h-4 text-foreground" />
-              </button>
+            <div 
+              className="relative"
+              onMouseEnter={() => setHoveredOption(3)}
+              onMouseLeave={() => setHoveredOption(null)}
+            >
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={currentGame}
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -10, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className={`gradient-text px-3 py-1 rounded-lg cursor-text transition-all duration-300 ${
+                    hoveredOption === 3 ? 'bg-accent/15 shadow-soft' : 'bg-accent/5'
+                  }`}
+                >
+                  {currentGame}
+                </motion.span>
+              </AnimatePresence>
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Option 4: Dropdown Hybrid */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-bga-surface border border-border/50 rounded-2xl p-8 space-y-6"
-        >
-          <div className="space-y-2">
-            <div className="inline-block px-3 py-1 bg-accent-start/20 rounded-full text-sm font-medium text-accent-start">
-              Option 4
-            </div>
-            <h3 className="text-xl font-semibold text-foreground">Dropdown Hybrid</h3>
-            <p className="text-sm text-muted-foreground">Editable with dropdown suggestions</p>
-          </div>
-
-          <div className="text-2xl text-foreground/90 flex flex-wrap items-center gap-2">
+        {/* Option 4: Minimal Border Box with Hint */}
+        <div className="border border-border rounded-lg p-8 space-y-4 bg-card">
+          <h2 className="text-xl font-semibold text-foreground">Option 4: Border Box</h2>
+          <p className="text-sm text-muted-foreground">Minimal border with "click to edit" hint on hover</p>
+          
+          <div className="text-3xl md:text-4xl font-bold text-foreground flex flex-wrap items-center justify-center gap-2 md:gap-3">
             <span>I want</span>
-            <span className="gradient-text font-semibold">rules</span>
+            <span className="gradient-text">rules</span>
             <span>for</span>
-            <div className="relative inline-block">
-              <button className="gradient-text font-semibold hover:scale-105 transition-transform px-3 py-1 rounded-lg hover:bg-accent/10 flex items-center gap-2">
-                <input
-                  type="text"
-                  value={game4}
-                  onChange={(e) => setGame4(e.target.value)}
-                  className="bg-transparent outline-none min-w-[120px]"
-                />
-                <ChevronDown className="w-4 h-4" />
-              </button>
-              <div className="absolute top-full left-0 mt-2 bg-bga-surface border border-border/50 rounded-xl p-2 min-w-[200px] shadow-soft">
-                <div className="text-sm space-y-1">
-                  <div className="text-muted-foreground px-3 py-1">Popular:</div>
-                  {["Catan", "Wingspan", "Azul"].map((g) => (
-                    <button
-                      key={g}
-                      onClick={() => setGame4(g)}
-                      className="w-full text-left px-3 py-2 hover:bg-accent/10 rounded-lg transition-colors"
+            <div 
+              className="relative inline-block"
+              onMouseEnter={() => setHoveredOption(4)}
+              onMouseLeave={() => setHoveredOption(null)}
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentGame}
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -10, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className={`gradient-text px-3 py-1 rounded-md cursor-text transition-all duration-300 border inline-flex items-baseline gap-2 ${
+                    hoveredOption === 4 
+                      ? 'border-accent-start/60' 
+                      : 'border-accent-start/20'
+                  }`}
+                >
+                  <span>{currentGame}</span>
+                  {hoveredOption === 4 && (
+                    <motion.span
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 0.5, width: "auto" }}
+                      exit={{ opacity: 0, width: 0 }}
+                      className="text-xs text-muted-foreground whitespace-nowrap"
                     >
-                      {g}
-                    </button>
-                  ))}
-                </div>
-              </div>
+                      (click to edit)
+                    </motion.span>
+                  )}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
 
-      <div className="text-center pt-8">
-        <p className="text-muted-foreground text-sm">
-          All options maintain gradient theme & allow custom game input
-        </p>
-      </div>
+      <p className="text-sm text-muted-foreground text-center max-w-2xl">
+        All options feature rolling game names and make the field editable. Choose the style that feels most natural and clear to you.
+      </p>
     </div>
   );
 };
