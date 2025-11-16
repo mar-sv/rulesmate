@@ -56,10 +56,10 @@ export const InteractiveSentence = ({ onSubmit, selectedIntent, setSelectedInten
       className="text-center space-y-8"
     >
       <div
-        className="text-3xl sm:text-4xl md:text-5xl font-bold text-white
-                flex flex-wrap md:flex-nowrap
+        className="text-2xl sm:text-3xl md:text-4xl font-bold text-white
+                flex flex-nowrap
                 items-center justify-center
-                gap-2 md:gap-3 text-center md:text-left"
+                gap-2 md:gap-3"
       >
         <span>I want</span>
         <button
