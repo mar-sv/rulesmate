@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Pencil, ChevronDown, X } from "lucide-react";
 import { useState } from "react";
 
-const Index = () => {
+const MockupComparison = () => {
   const [game1, setGame1] = useState("Catan");
   const [game2, setGame2] = useState("Catan");
   const [game3, setGame3] = useState("Catan");
@@ -175,4 +175,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default MockupComparison;
