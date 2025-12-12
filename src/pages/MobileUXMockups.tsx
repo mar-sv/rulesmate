@@ -49,10 +49,10 @@ const MobileUXMockups = () => {
               {activeTab === "chat" ? (
                 <div className="space-y-3">
                   <div className="bg-muted/50 rounded-xl p-3 max-w-[80%]">
-                    <p className="text-sm text-foreground">How do I score a city in Carcassonne?</p>
+                    <p className="text-sm text-foreground">How do I score a city?</p>
                   </div>
                   <div className="bg-primary/20 rounded-xl p-3 max-w-[80%] ml-auto">
-                    <p className="text-sm text-foreground">Cities score 2 points per tile when completed...</p>
+                    <p className="text-sm text-foreground">Cities score 2 points per tile...</p>
                   </div>
                 </div>
               ) : (
@@ -75,26 +75,40 @@ const MobileUXMockups = () => {
               )}
             </div>
 
+            {/* Chat Input - only visible in chat tab */}
+            {activeTab === "chat" && (
+              <div className="p-2 border-t border-border/50">
+                <div className="bg-muted/30 rounded-full px-4 py-2 text-xs text-muted-foreground">
+                  Ask about the rules...
+                </div>
+              </div>
+            )}
+
             {/* Bottom Tab Bar */}
             <div className="border-t border-border bg-muted/30 flex">
               <button
                 onClick={() => setActiveTab("chat")}
-                className={`flex-1 py-3 flex flex-col items-center gap-1 ${
+                className={`flex-1 py-2 flex flex-col items-center gap-0.5 ${
                   activeTab === "chat" ? "text-primary" : "text-muted-foreground"
                 }`}
               >
-                <MessageCircle className="w-5 h-5" />
-                <span className="text-xs">Chat</span>
+                <MessageCircle className="w-4 h-4" />
+                <span className="text-[10px]">Chat</span>
               </button>
               <button
                 onClick={() => setActiveTab("resources")}
-                className={`flex-1 py-3 flex flex-col items-center gap-1 ${
+                className={`flex-1 py-2 flex flex-col items-center gap-0.5 ${
                   activeTab === "resources" ? "text-primary" : "text-muted-foreground"
                 }`}
               >
-                <BookOpen className="w-5 h-5" />
-                <span className="text-xs">Resources</span>
+                <BookOpen className="w-4 h-4" />
+                <span className="text-[10px]">Resources</span>
               </button>
+            </div>
+
+            {/* Feedback Bar */}
+            <div className="bg-[hsl(25,95%,53%)] py-1.5 text-center">
+              <span className="text-[10px] text-background font-medium">Found a bug? Let us know!</span>
             </div>
           </div>
           <div className="text-sm text-muted-foreground">
@@ -123,7 +137,7 @@ const MobileUXMockups = () => {
             </div>
 
             {/* Chat Content */}
-            <div className="flex-1 p-4 overflow-auto">
+            <div className="flex-1 p-4 overflow-auto pb-16">
               <div className="space-y-3">
                 <div className="bg-muted/50 rounded-xl p-3 max-w-[80%]">
                   <p className="text-sm text-foreground">How do monasteries work?</p>
@@ -134,34 +148,46 @@ const MobileUXMockups = () => {
               </div>
             </div>
 
+            {/* Chat Input */}
+            <div className="p-2 border-t border-border/50 bg-card">
+              <div className="bg-muted/30 rounded-full px-4 py-2 text-xs text-muted-foreground">
+                Ask about the rules...
+              </div>
+            </div>
+
             {/* Bottom Sheet */}
             <motion.div
-              animate={{ height: sheetOpen ? "60%" : "48px" }}
-              className="absolute bottom-0 left-0 right-0 bg-card border-t border-border rounded-t-2xl overflow-hidden"
+              animate={{ height: sheetOpen ? "55%" : "40px" }}
+              className="absolute bottom-8 left-0 right-0 bg-card border-t border-border rounded-t-2xl overflow-hidden"
             >
               <button
                 onClick={() => setSheetOpen(!sheetOpen)}
-                className="w-full p-3 flex items-center justify-center gap-2 text-sm font-medium text-foreground"
+                className="w-full p-2 flex items-center justify-center gap-2 text-xs font-medium text-foreground"
               >
                 <motion.div animate={{ rotate: sheetOpen ? 180 : 0 }}>
-                  <ChevronUp className="w-5 h-5" />
+                  <ChevronUp className="w-4 h-4" />
                 </motion.div>
-                <BookOpen className="w-4 h-4" />
+                <BookOpen className="w-3 h-3" />
                 Resources
               </button>
               {sheetOpen && (
-                <div className="p-4 space-y-3">
+                <div className="p-3 space-y-2">
                   <div className="bg-muted/30 rounded-xl p-3 flex items-center gap-3">
-                    <FileText className="w-6 h-6 text-primary" />
+                    <FileText className="w-5 h-5 text-primary" />
                     <span className="text-sm text-foreground">Rulebook PDF</span>
                   </div>
                   <div className="bg-muted/30 rounded-xl p-3 flex items-center gap-3">
-                    <Video className="w-6 h-6 text-primary" />
+                    <Video className="w-5 h-5 text-primary" />
                     <span className="text-sm text-foreground">How to Play Video</span>
                   </div>
                 </div>
               )}
             </motion.div>
+
+            {/* Feedback Bar */}
+            <div className="bg-[hsl(25,95%,53%)] py-1.5 text-center absolute bottom-0 left-0 right-0">
+              <span className="text-[10px] text-background font-medium">Found a bug? Let us know!</span>
+            </div>
           </div>
           <div className="text-sm text-muted-foreground">
             <strong className="text-foreground">Pros:</strong> Quick access, chat stays visible
@@ -219,11 +245,16 @@ const MobileUXMockups = () => {
               </div>
             </div>
 
-            {/* Input */}
-            <div className="p-3 border-t border-border/50">
-              <div className="bg-muted/30 rounded-full px-4 py-2 text-sm text-muted-foreground">
+            {/* Chat Input */}
+            <div className="p-2 border-t border-border/50">
+              <div className="bg-muted/30 rounded-full px-4 py-2 text-xs text-muted-foreground">
                 Ask about the rules...
               </div>
+            </div>
+
+            {/* Feedback Bar */}
+            <div className="bg-[hsl(25,95%,53%)] py-1.5 text-center">
+              <span className="text-[10px] text-background font-medium">Found a bug? Let us know!</span>
             </div>
           </div>
           <div className="text-sm text-muted-foreground">
