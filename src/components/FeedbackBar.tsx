@@ -34,7 +34,7 @@ export const FeedbackBar = () => {
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-2 items-center w-full">
               <input
                 type="text"
                 value={message}
@@ -46,15 +46,14 @@ export const FeedbackBar = () => {
                   }
                 }}
                 placeholder="Describe the issue..."
-                className="flex-1 h-10 px-3 text-sm bg-input border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
+                className="min-w-0 flex-1 h-10 px-3 text-sm bg-input border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
               />
-              <Button
+              <button
                 onClick={handleSubmit}
-                size="icon"
-                className="h-10 w-10 bg-[hsl(var(--feedback))] hover:bg-[hsl(var(--feedback))]/90 text-background shrink-0"
+                className="flex-none h-10 w-10 flex items-center justify-center rounded-md bg-[hsl(var(--feedback))] hover:brightness-110 text-background transition-all"
               >
                 <Send className="w-4 h-4" />
-              </Button>
+              </button>
             </div>
           </motion.div>
         ) : (
