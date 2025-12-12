@@ -46,7 +46,7 @@ export const FeedbackBar = () => {
                   }
                 }}
                 placeholder="Describe the issue..."
-                className="min-w-0 flex-1 h-10 px-3 text-sm bg-input border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
+                className="min-w-0 flex-1 h-10 px-3 text-base bg-input border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring"
               />
               <button
                 onClick={handleSubmit}
