@@ -1,7 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Maximize2, Minimize2, FileText, X, BookOpen } from "lucide-react";
+import { Maximize2, Minimize2, FileText, X, BookOpen, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Document, Page, pdfjs } from "react-pdf";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import "react-pdf/dist/esm/Page/TextLayer.css";
+
+// Configure PDF.js worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 interface RulebookViewerProps {
   game: string;
@@ -67,16 +73,29 @@ const RULEBOOK_SECTIONS = [
   }
 ];
 
+const PDF_URL = "/rulebooks/Terraforming_Mars.pdf";
+
 export const RulebookViewer = ({ game, highlightedSection, onClearHighlight }: RulebookViewerProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [numPages, setNumPages] = useState<number | null>(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pdfError, setPdfError] = useState<string | null>(null);
   const highlightedRef = useRef<HTMLDivElement>(null);
 
-  // Auto-expand and scroll when a section is highlighted
+  // Get the page number from highlighted section
+  const getPageFromSection = (sectionId: string | null): number => {
+    if (!sectionId) return pageNumber;
+    const section = RULEBOOK_SECTIONS.find(s => s.id === sectionId);
+    return section ? section.page : pageNumber;
+  };
+
+  // Auto-expand and navigate to page when a section is highlighted
   useEffect(() => {
     if (highlightedSection) {
       setIsExpanded(true);
-      // Scroll to highlighted section after a short delay for animation
+      const targetPage = getPageFromSection(highlightedSection);
+      setPageNumber(targetPage);
       setTimeout(() => {
         highlightedRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       }, 300);
@@ -87,6 +106,19 @@ export const RulebookViewer = ({ game, highlightedSection, onClearHighlight }: R
     setIsFullscreen(false);
     onClearHighlight?.();
   };
+
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+    setNumPages(numPages);
+    setPdfError(null);
+  };
+
+  const onDocumentLoadError = (error: Error) => {
+    console.error("PDF load error:", error);
+    setPdfError("Failed to load PDF");
+  };
+
+  const goToPrevPage = () => setPageNumber(prev => Math.max(prev - 1, 1));
+  const goToNextPage = () => setPageNumber(prev => Math.min(prev + 1, numPages || prev));
 
   const ParsedContent = ({ compact = false }: { compact?: boolean }) => (
     <div className={`space-y-3 ${compact ? "max-h-[300px]" : "max-h-[60vh]"} overflow-y-auto pr-2 scrollbar-thin`}>
@@ -102,7 +134,8 @@ export const RulebookViewer = ({ game, highlightedSection, onClearHighlight }: R
               backgroundColor: "hsl(var(--primary) / 0.15)",
               transition: { duration: 0.3 }
             } : {}}
-            className={`p-3 rounded-lg border transition-all duration-300 ${
+            onClick={() => setPageNumber(section.page)}
+            className={`p-3 rounded-lg border transition-all duration-300 cursor-pointer ${
               isHighlighted
                 ? "border-primary bg-primary/10 ring-2 ring-primary/30 shadow-lg"
                 : "border-border/30 bg-background/30 hover:bg-background/50"
@@ -110,7 +143,9 @@ export const RulebookViewer = ({ game, highlightedSection, onClearHighlight }: R
           >
             <div className="flex items-center justify-between mb-2">
               <span className={`text-xs font-bold px-2 py-0.5 rounded ${
-                isHighlighted ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                isHighlighted || pageNumber === section.page 
+                  ? "bg-primary text-primary-foreground" 
+                  : "bg-muted text-muted-foreground"
               }`}>
                 Page {section.page}
               </span>
@@ -125,41 +160,59 @@ export const RulebookViewer = ({ game, highlightedSection, onClearHighlight }: R
     </div>
   );
 
-  const PDFMockup = ({ large = false }: { large?: boolean }) => (
-    <div className={`bg-gradient-to-b from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 rounded-lg border border-amber-200/50 dark:border-amber-800/30 ${large ? "p-6" : "p-4"} flex flex-col`}>
-      <div className="flex items-center gap-2 mb-4 pb-3 border-b border-amber-200/50 dark:border-amber-800/30">
-        <BookOpen className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-        <span className="font-semibold text-amber-900 dark:text-amber-100">Terraforming Mars - Official Rulebook</span>
-      </div>
+  const PDFContent = ({ width = 300 }: { width?: number }) => (
+    <div className="flex flex-col items-center">
+      <Document
+        file={PDF_URL}
+        onLoadSuccess={onDocumentLoadSuccess}
+        onLoadError={onDocumentLoadError}
+        loading={
+          <div className="flex items-center justify-center p-8">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        }
+        error={
+          <div className="flex flex-col items-center justify-center p-8 text-muted-foreground">
+            <FileText className="w-12 h-12 mb-2" />
+            <p className="text-sm">{pdfError || "Failed to load PDF"}</p>
+          </div>
+        }
+      >
+        <Page 
+          pageNumber={pageNumber} 
+          width={width}
+          renderTextLayer={false}
+          renderAnnotationLayer={false}
+          loading={
+            <div className="flex items-center justify-center" style={{ width, height: width * 1.4 }}>
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+            </div>
+          }
+        />
+      </Document>
       
-      {/* PDF Page mockup */}
-      <div className={`bg-white dark:bg-gray-900 rounded shadow-inner p-4 ${large ? "min-h-[400px]" : "min-h-[120px]"} flex flex-col`}>
-        <div className="text-center mb-4">
-          <h1 className="text-lg font-bold text-red-700 dark:text-red-400">TERRAFORMING MARS</h1>
-          <p className="text-xs text-gray-500">by Jacob Fryxelius</p>
-        </div>
-        
-        <div className="flex-1 text-xs text-gray-600 dark:text-gray-400 space-y-2">
-          <p className="font-medium text-gray-800 dark:text-gray-200">Game Overview</p>
-          <p className="line-clamp-3">In Terraforming Mars, you control a corporation, and you buy and play cards describing different projects. The projects often directly or indirectly contribute to the terraforming process...</p>
-        </div>
-      </div>
-
-      {/* Page navigation */}
-      <div className="mt-4 flex items-center justify-center gap-1">
-        {RULEBOOK_SECTIONS.map((section) => (
+      {/* Page Navigation */}
+      {numPages && (
+        <div className="flex items-center gap-3 mt-3 p-2 bg-muted/50 rounded-lg">
           <button
-            key={section.id}
-            className={`w-7 h-7 rounded text-xs font-medium transition-all ${
-              highlightedSection === section.id
-                ? "bg-primary text-primary-foreground ring-2 ring-primary/50 scale-110"
-                : "bg-amber-100 dark:bg-amber-900/50 hover:bg-amber-200 dark:hover:bg-amber-800/50 text-amber-700 dark:text-amber-300"
-            }`}
+            onClick={goToPrevPage}
+            disabled={pageNumber <= 1}
+            className="p-1.5 rounded-md hover:bg-background disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            {section.page}
+            <ChevronLeft className="w-4 h-4" />
           </button>
-        ))}
-      </div>
+          <span className="text-sm font-medium min-w-[80px] text-center">
+            Page {pageNumber} of {numPages}
+          </span>
+          <button
+            onClick={goToNextPage}
+            disabled={pageNumber >= numPages}
+            className="p-1.5 rounded-md hover:bg-background disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 
@@ -192,12 +245,12 @@ export const RulebookViewer = ({ game, highlightedSection, onClearHighlight }: R
           <AnimatePresence mode="wait">
             <motion.div
               key={isExpanded ? "expanded" : "collapsed"}
-              initial={{ height: 180 }}
-              animate={{ height: isExpanded ? "auto" : 180 }}
+              initial={{ height: 220 }}
+              animate={{ height: isExpanded ? "auto" : 220 }}
               className="overflow-hidden"
             >
-              <div className="p-3">
-                <PDFMockup />
+              <div className="p-3 flex justify-center">
+                <PDFContent width={isExpanded ? 380 : 280} />
               </div>
             </motion.div>
           </AnimatePresence>
@@ -240,8 +293,8 @@ export const RulebookViewer = ({ game, highlightedSection, onClearHighlight }: R
           </div>
           <div className="flex-1 flex overflow-hidden">
             {/* PDF Side */}
-            <div className="flex-1 p-4 border-r border-border/50 overflow-auto bg-muted/20">
-              <PDFMockup large />
+            <div className="flex-1 p-4 border-r border-border/50 overflow-auto bg-muted/20 flex justify-center">
+              <PDFContent width={500} />
             </div>
             {/* Parsed Text Side */}
             <div className="w-[420px] p-4 overflow-auto bg-background">
