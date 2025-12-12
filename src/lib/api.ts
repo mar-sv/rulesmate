@@ -18,10 +18,11 @@
  * 
  * @app.get("/games/{game_id}/resources")
  * async def get_resources(game_id: str) -> ResourcesResponse:
- *     ...
  */
 
-const API_BASE_URL = "https://your-api.com"; // TODO: Replace with your FastAPI base URL
+// API Base URL - uses environment variable if available, otherwise falls back to placeholder
+// For production: set VITE_API_BASE_URL in your environment
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://your-api.com";
 
 // ============================================
 // CONVERSATION SESSION
