@@ -61,7 +61,16 @@ const Chat = () => {
       exit={{ opacity: 0 }}
       className="flex flex-col h-[100dvh] w-full overflow-hidden"
     >
-      {/* Header - visible on all screens */}
+      {/* Desktop Top Header - hidden on mobile */}
+      <header className="hidden md:flex items-center justify-between px-8 py-4 border-b border-border/30 bg-background shrink-0">
+        <div className="flex items-center gap-3">
+          <h2 className="text-xl font-black gradient-text">Rules Mate</h2>
+          <span className="text-sm text-muted-foreground">Board game help, instantly.</span>
+        </div>
+        <div className="w-2 h-2 rounded-full bg-accent-start animate-pulse" />
+      </header>
+
+      {/* Game Header - visible on all screens */}
       <div className="border-b border-border/50 p-4 flex items-center gap-4 bg-bga-surface/50 backdrop-blur shrink-0">
         <button
           onClick={() => navigate("/")}
