@@ -240,7 +240,7 @@ const Index = () => {
           scale: 1.05
         }} whileTap={{
           scale: 0.95
-        }} onClick={handleSubmit} disabled={!isValidGame} className="bg-accent-start hover:bg-accent-end px-10 sm:px-12 md:px-16 py-3 md:py-4 rounded-full text-foreground text-base md:text-lg font-bold shadow-glow disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+        }} onClick={handleSubmit} disabled={!isValidGame} className="bg-accent-end px-10 sm:px-12 md:px-16 py-3 md:py-4 rounded-full text-foreground text-base md:text-lg font-bold shadow-glow disabled:opacity-50 disabled:cursor-not-allowed">
             Start
           </motion.button>
         </div>
