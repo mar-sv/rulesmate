@@ -34,6 +34,15 @@ const Index = () => {
 
   return (
     <main className="h-[100dvh] flex flex-col overflow-hidden">
+      {/* Desktop Header - hidden on mobile */}
+      <header className="hidden md:flex items-center justify-between px-8 py-4 border-b border-border/30">
+        <div className="flex items-center gap-3">
+          <h2 className="text-xl font-black gradient-text">Rules Mate</h2>
+          <span className="text-sm text-muted-foreground">Board game help, instantly.</span>
+        </div>
+        <div className="w-2 h-2 rounded-full bg-accent-start animate-pulse" />
+      </header>
+      
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
