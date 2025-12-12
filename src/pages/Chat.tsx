@@ -62,16 +62,16 @@ const Chat = () => {
       className="flex flex-col h-[100dvh] w-full overflow-hidden"
     >
       {/* Header - visible on all screens */}
-      <div className="border-b border-border/50 p-4 flex items-center gap-4 bg-bga-surface/50 backdrop-blur shrink-0">
+      <div className="border-b border-border/50 px-4 py-5 md:px-6 md:py-6 flex items-center gap-4 bg-bga-surface/50 backdrop-blur shrink-0">
         <button
           onClick={() => navigate("/")}
           className="text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
         </button>
         <div className="flex-1">
-          <h1 className="text-lg font-semibold text-foreground">{game || "Board Game"}</h1>
-          <p className="text-sm text-muted-foreground capitalize">{intent || "Assistant"}</p>
+          <h1 className="text-xl md:text-2xl font-bold text-foreground">{game || "Board Game"}</h1>
+          <p className="text-sm md:text-base text-muted-foreground capitalize mt-0.5">{intent === "general" ? "Assistant" : intent || "Assistant"}</p>
         </div>
       </div>
 
