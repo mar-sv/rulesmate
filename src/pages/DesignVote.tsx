@@ -118,8 +118,8 @@ const DeviceFrame = ({
   <div 
     className={`
       bg-gradient-to-b from-[hsl(var(--bg-start))] to-[hsl(var(--bg-end))] 
-      rounded-2xl border-2 border-border/50 overflow-hidden shadow-xl
-      ${type === "mobile" ? "w-[260px] h-[520px]" : "w-[480px] h-[320px]"}
+      rounded-2xl border-2 border-border/50 overflow-auto shadow-xl
+      ${type === "mobile" ? "w-[260px] h-[520px]" : "w-[520px] h-[400px]"}
     `}
   >
     {children}
