@@ -78,14 +78,19 @@ const Chat = () => {
       {/* Mobile Layout with Bottom Tabs */}
       <div className="flex-1 flex flex-col md:hidden overflow-hidden">
         {/* Content Area */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden">
           {mobileTab === "chat" ? (
-            <div className="flex flex-col h-full">
+            <>
               <ChatThread messages={messages} isTyping={isTyping} />
               <ChatInput onSend={handleSendMessage} disabled={isTyping} />
-            </div>
+            </>
           ) : (
-            <ResourcePanel game={game || "Board Game"} />
+            <div className="flex-1 flex flex-col overflow-hidden">
+              <div className="flex-1 overflow-auto">
+                <ResourcePanel game={game || "Board Game"} />
+              </div>
+              <FeedbackBar />
+            </div>
           )}
         </div>
 
@@ -134,7 +139,9 @@ const Chat = () => {
         </ResizablePanelGroup>
       </div>
 
-      <FeedbackBar />
+      <div className="hidden md:block">
+        <FeedbackBar />
+      </div>
     </motion.div>
   );
 };
