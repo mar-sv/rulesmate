@@ -24,6 +24,33 @@
 const API_BASE_URL = "https://your-api.com"; // TODO: Replace with your FastAPI base URL
 
 // ============================================
+// CONVERSATION SESSION
+// ============================================
+const CONVERSATION_KEY = "rulesmate_conversation_id";
+
+/**
+ * Get or create a conversation ID (stored in localStorage)
+ * This persists across page refreshes but clears when browser data is cleared
+ */
+export function getConversationId(): string {
+  let conversationId = localStorage.getItem(CONVERSATION_KEY);
+  if (!conversationId) {
+    conversationId = crypto.randomUUID();
+    localStorage.setItem(CONVERSATION_KEY, conversationId);
+  }
+  return conversationId;
+}
+
+/**
+ * Start a new conversation (generates new ID)
+ */
+export function startNewConversation(): string {
+  const conversationId = crypto.randomUUID();
+  localStorage.setItem(CONVERSATION_KEY, conversationId);
+  return conversationId;
+}
+
+// ============================================
 // GAME SEARCH API
 // ============================================
 export interface Game {
@@ -69,6 +96,7 @@ export interface ChatMessage {
 }
 
 export interface ChatRequest {
+  conversation_id: string;
   game: string;
   intent: string;
   messages: ChatMessage[];
@@ -81,6 +109,13 @@ export interface ChatResponse {
 /**
  * Send a chat message and get AI response
  * Endpoint: POST /chat
+ * 
+ * FastAPI model:
+ * class ChatRequest(BaseModel):
+ *     conversation_id: str
+ *     game: str
+ *     intent: str
+ *     messages: list[ChatMessage]
  */
 export async function sendChatMessage(request: ChatRequest): Promise<ChatResponse> {
   // TODO: Replace with actual API call
@@ -93,7 +128,8 @@ export async function sendChatMessage(request: ChatRequest): Promise<ChatRespons
   // return response.json();
 
   // Mock implementation - remove when connecting to real API
-  await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
+  console.log("Chat request with conversation_id:", request.conversation_id);
+  await new Promise(resolve => setTimeout(resolve, 1500));
   
   const lastUserMessage = request.messages[request.messages.length - 1]?.content || "";
   return {

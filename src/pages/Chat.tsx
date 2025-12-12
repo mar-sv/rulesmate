@@ -7,7 +7,7 @@ import { ChatInput } from "@/components/Chat/ChatInput";
 import { ResourcePanel } from "@/components/Resources/ResourcePanel";
 import { FeedbackBar } from "@/components/FeedbackBar";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
-import { sendChatMessage, ChatMessage } from "@/lib/api";
+import { sendChatMessage, ChatMessage, getConversationId, startNewConversation } from "@/lib/api";
 
 const Chat = () => {
   const location = useLocation();
@@ -17,6 +17,15 @@ const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [mobileTab, setMobileTab] = useState<"chat" | "resources">("chat");
+  const [conversationId, setConversationId] = useState<string>("");
+
+  // Initialize conversation ID on mount
+  useEffect(() => {
+    // Start a new conversation when entering chat page
+    const newConversationId = startNewConversation();
+    setConversationId(newConversationId);
+    console.log("Started new conversation:", newConversationId);
+  }, []);
 
   // Initialize with welcome message
   useEffect(() => {
@@ -51,6 +60,7 @@ const Chat = () => {
       chatHistory.push({ role: "user", content });
 
       const response = await sendChatMessage({
+        conversation_id: conversationId,
         game: game || "Board Game",
         intent: intent || "general",
         messages: chatHistory,
