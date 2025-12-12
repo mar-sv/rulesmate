@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { BookOpen, MessageCircleQuestion, Play, Settings } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { BookOpen, MessageCircleQuestion, Play, Settings, Check, X } from "lucide-react";
 import { FeedbackBar } from "@/components/FeedbackBar";
 
 const shortcuts = [
@@ -11,14 +11,78 @@ const shortcuts = [
   { label: "Setup", icon: Settings, subtitle: "Get started fast", intent: "setup" },
 ];
 
+// Mock available games - will be replaced with actual database
+const availableGames = [
+  "Catan",
+  "Catan: Seafarers",
+  "Catan: Cities & Knights",
+  "Ticket to Ride",
+  "Ticket to Ride: Europe",
+  "Monopoly",
+  "Monopoly Deal",
+  "Scrabble",
+  "Chess",
+  "Pandemic",
+  "Pandemic Legacy",
+  "Azul",
+  "Azul: Summer Pavilion",
+  "Wingspan",
+  "Codenames",
+  "7 Wonders",
+];
+
 const Index = () => {
   const navigate = useNavigate();
   const [game, setGame] = useState("");
   const [selectedIntent, setSelectedIntent] = useState<string | null>(null);
+  const [selectedGame, setSelectedGame] = useState<string | null>(null);
+  const [showResults, setShowResults] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const filterGames = (query: string) => {
+    if (!query.trim()) return [];
+    return availableGames.filter(g => 
+      g.toLowerCase().includes(query.toLowerCase())
+    );
+  };
+
+  const hasNoMatch = (query: string) => {
+    if (!query.trim()) return false;
+    return !availableGames.some(g => 
+      g.toLowerCase().includes(query.toLowerCase())
+    );
+  };
+
+  // Option 3: Show after space or 3+ chars
+  useEffect(() => {
+    const hasSpace = game.includes(" ");
+    if ((hasSpace || game.length >= 3) && !selectedGame) {
+      setShowResults(true);
+    } else {
+      setShowResults(false);
+    }
+  }, [game, selectedGame]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current && 
+        !dropdownRef.current.contains(e.target as Node) &&
+        inputRef.current &&
+        !inputRef.current.contains(e.target as Node)
+      ) {
+        setShowResults(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSubmit = () => {
-    if (game.trim()) {
-      navigate("/chat", { state: { intent: selectedIntent || "general", game: game.trim() } });
+    if (selectedGame) {
+      navigate("/chat", { state: { intent: selectedIntent || "general", game: selectedGame } });
     }
   };
 
@@ -27,10 +91,24 @@ const Index = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && game.trim()) {
+    if (e.key === "Enter" && selectedGame) {
       handleSubmit();
     }
   };
+
+  const handleGameSelect = (gameName: string) => {
+    setSelectedGame(gameName);
+    setGame(gameName);
+    setShowResults(false);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGame(e.target.value);
+    setSelectedGame(null);
+  };
+
+  const isValidGame = selectedGame !== null;
+  const showError = hasNoMatch(game) && showResults;
 
   return (
     <main className="h-[100dvh] flex flex-col overflow-hidden">
@@ -52,18 +130,91 @@ const Index = () => {
             <p className="text-sm sm:text-base md:text-lg text-muted-foreground">Board game help, instantly.</p>
           </motion.div>
           
-          {/* Game Input */}
-          <motion.input 
+          {/* Game Input with Validation */}
+          <motion.div 
             initial={{ y: -10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-            type="text" 
-            placeholder="Which game?"
-            value={game}
-            onChange={(e) => setGame(e.target.value)}
-            onKeyDown={handleKeyDown}
-            className="w-full max-w-xs sm:max-w-sm md:max-w-md bg-card border border-border rounded-xl px-4 md:px-6 py-3 md:py-4 text-base md:text-lg text-foreground placeholder:text-muted-foreground text-center mb-6 md:mb-8 focus:outline-none focus:ring-2 focus:ring-accent-start/50 focus:border-accent-start/50 transition-all"
-          />
+            className="relative w-full max-w-xs sm:max-w-sm md:max-w-md mb-6 md:mb-8"
+          >
+            <div className="relative">
+              <input 
+                ref={inputRef}
+                type="text" 
+                placeholder="Which game?"
+                value={game}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                className={`w-full bg-card border-2 rounded-xl px-4 md:px-6 py-3 md:py-4 text-base md:text-lg text-foreground placeholder:text-muted-foreground text-center focus:outline-none transition-all ${
+                  isValidGame 
+                    ? "border-green-500/50 bg-green-500/5" 
+                    : showError
+                      ? "border-red-500/50 bg-red-500/5"
+                      : "border-border focus:border-accent-start/50 focus:ring-2 focus:ring-accent-start/50"
+                }`}
+              />
+              {isValidGame && (
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2"
+                >
+                  <Check className="w-5 h-5 text-green-500" />
+                </motion.div>
+              )}
+              {showError && (
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2"
+                >
+                  <X className="w-5 h-5 text-red-500" />
+                </motion.div>
+              )}
+            </div>
+            
+            {/* Dropdown Results */}
+            <AnimatePresence>
+              {showResults && !selectedGame && filterGames(game).length > 0 && (
+                <motion.div
+                  ref={dropdownRef}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-lg overflow-hidden z-50"
+                >
+                  <div className="max-h-48 overflow-y-auto">
+                    {filterGames(game).map((gameName) => (
+                      <button
+                        key={gameName}
+                        onClick={() => handleGameSelect(gameName)}
+                        className="w-full px-4 py-3 text-left text-foreground hover:bg-accent-start/10 transition-colors"
+                      >
+                        {gameName}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            
+            {/* Error state inline */}
+            <AnimatePresence>
+              {showError && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="text-center mt-3"
+                >
+                  <p className="text-red-400 text-sm mb-1">We don't have "{game}" yet</p>
+                  <button className="text-accent-start text-sm hover:underline">
+                    Request it via feedback →
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
           
           {/* Intent Grid */}
           <motion.div 
@@ -112,7 +263,7 @@ const Index = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleSubmit}
-            disabled={!game.trim()}
+            disabled={!isValidGame}
             className="gradient-accent px-10 sm:px-12 md:px-16 py-3 md:py-4 rounded-full text-foreground text-base md:text-lg font-bold shadow-glow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             Start
