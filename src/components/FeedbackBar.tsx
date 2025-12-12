@@ -13,37 +13,55 @@ export const FeedbackBar = () => {
     setMessage("");
     setIsExpanded(false);
   };
-  return <div className="border-t border-border bg-background">
+  return (
+    <div className="border-t border-border bg-background shrink-0">
       <AnimatePresence mode="wait">
-        {isExpanded ? <motion.div initial={{
-        height: 40
-      }} animate={{
-        height: "auto"
-      }} exit={{
-        height: 40
-      }} className="p-3">
+        {isExpanded ? (
+          <motion.div
+            initial={{ height: 40 }}
+            animate={{ height: "auto" }}
+            exit={{ height: 40 }}
+            className="p-3"
+          >
             <div className="flex justify-between items-center mb-2">
               <span className="text-xs font-medium text-foreground">
                 Found a bug? Have a suggestion? Let us know!
               </span>
-              <button onClick={() => setIsExpanded(false)} className="text-muted-foreground hover:text-foreground transition-colors">
+              <button
+                onClick={() => setIsExpanded(false)}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="flex gap-2">
-              <Textarea value={message} onChange={e => setMessage(e.target.value)} placeholder="Describe the issue or share your idea..." className="text-sm h-16 sm:h-20 resize-none flex-1" />
-              <Button onClick={handleSubmit} size="sm" className="h-16 sm:h-20 px-3 sm:px-4">
+            <div className="flex gap-2 items-end">
+              <Textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Describe the issue or share your idea..."
+                className="text-sm h-12 resize-none flex-1"
+              />
+              <Button
+                onClick={handleSubmit}
+                size="sm"
+                className="h-12 px-4 bg-[hsl(var(--feedback))] hover:bg-[hsl(var(--feedback))]/90 text-background shrink-0"
+              >
                 <Send className="w-4 h-4" />
               </Button>
             </div>
-          </motion.div> : <motion.button initial={{
-        opacity: 0
-      }} animate={{
-        opacity: 1
-      }} onClick={() => setIsExpanded(true)} className="w-full py-2.5 px-4 flex items-center justify-center gap-2 text-xs font-medium text-background bg-[hsl(var(--feedback))] hover:brightness-110 transition-all bg-[#725d1d]">
+          </motion.div>
+        ) : (
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            onClick={() => setIsExpanded(true)}
+            className="w-full py-2.5 px-4 flex items-center justify-center gap-2 text-xs font-medium text-background bg-[hsl(var(--feedback))] hover:brightness-110 transition-all"
+          >
             <ChevronUp className="w-3 h-3" />
             <span>Found a bug? Have a suggestion? Let us know!</span>
-          </motion.button>}
+          </motion.button>
+        )}
       </AnimatePresence>
-    </div>;
+    </div>
+  );
 };
