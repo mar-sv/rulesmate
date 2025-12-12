@@ -27,11 +27,11 @@ export const ResourcePanel = ({ game }: ResourcePanelProps) => {
       <AnimatePresence>
         {isOpen && (
           <motion.aside
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 25 }}
-            className="fixed md:relative right-0 top-0 h-screen w-full md:w-[400px] lg:w-[450px] bg-bga-surface border-l border-border/50 overflow-y-auto z-40"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="h-full w-full bg-bga-surface overflow-y-auto"
           >
             <div className="sticky top-0 bg-bga-surface border-b border-border/50 p-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-foreground">Resources</h2>
