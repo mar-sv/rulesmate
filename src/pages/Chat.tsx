@@ -84,7 +84,7 @@ const Chat = () => {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: "Sorry, I encountered an error. Please try again.",
+        content: t("chat.errorMessage"),
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -104,7 +104,7 @@ const Chat = () => {
       <header className="hidden md:flex items-center justify-between px-8 py-4 border-b border-border/30 bg-background shrink-0">
         <div className="flex items-center gap-3">
           <h2 className="text-xl font-black gradient-text">Rules Mate</h2>
-          <span className="text-sm text-muted-foreground">Board game help, instantly.</span>
+          <span className="text-sm text-muted-foreground">{t("chat.header")}</span>
         </div>
         <div className="w-2 h-2 rounded-full bg-accent-start animate-pulse" />
       </header>
@@ -119,7 +119,7 @@ const Chat = () => {
         </button>
         <div className="flex-1">
           <h1 className="text-lg font-semibold text-foreground">{game || "Board Game"}</h1>
-          <p className="text-sm text-muted-foreground capitalize">{intent || "Assistant"}</p>
+          <p className="text-sm text-muted-foreground capitalize">{intent ? t(`intents.${intent}`) : t("chat.assistant")}</p>
         </div>
       </div>
 
@@ -153,7 +153,7 @@ const Chat = () => {
             }`}
           >
             <MessageCircle className="w-5 h-5" />
-            <span className="text-xs font-medium">Chat</span>
+            <span className="text-xs font-medium">{t("chat.tabs.chat")}</span>
           </button>
           <button
             onClick={() => setMobileTab("resources")}
@@ -164,7 +164,7 @@ const Chat = () => {
             }`}
           >
             <BookOpen className="w-5 h-5" />
-            <span className="text-xs font-medium">Resources</span>
+            <span className="text-xs font-medium">{t("chat.tabs.resources")}</span>
           </button>
         </div>
       </div>

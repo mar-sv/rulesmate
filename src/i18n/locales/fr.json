@@ -5,5 +5,41 @@
     "walkthrough": "Jouons ensemble à {{game}}. Prêt à commencer?",
     "setup": "Je vais vous aider à installer {{game}} étape par étape. Par où commencer?",
     "general": "Comment puis-je vous aider avec {{game}} aujourd'hui?"
+  },
+  "landing": {
+    "tagline": "Aide aux jeux de société, instantanément.",
+    "inputPlaceholder": "Quel jeu?",
+    "start": "Commencer",
+    "notFound": "Nous n'avons pas encore \"{{game}}\"",
+    "requestGame": "Demandez-le via le formulaire ci-dessous"
+  },
+  "intents": {
+    "rules": "Règles",
+    "rulesSubtitle": "Apprenez à jouer",
+    "clarifications": "Clarifications",
+    "clarificationsSubtitle": "Réponses rapides",
+    "walkthrough": "Guide",
+    "walkthroughSubtitle": "Étape par étape",
+    "setup": "Installation",
+    "setupSubtitle": "Démarrez rapidement"
+  },
+  "chat": {
+    "header": "Aide aux jeux de société, instantanément.",
+    "assistant": "Assistant",
+    "inputPlaceholder": "Posez une question...",
+    "errorMessage": "Désolé, une erreur s'est produite. Veuillez réessayer.",
+    "tabs": {
+      "chat": "Chat",
+      "resources": "Ressources"
+    }
+  },
+  "feedback": {
+    "prompt": "Bug trouvé? Une suggestion? Dites-le nous!",
+    "placeholder": "Partagez vos commentaires...",
+    "submit": "Envoyer",
+    "success": "Merci!",
+    "successDescription": "Vos commentaires ont été envoyés.",
+    "error": "Erreur",
+    "errorDescription": "Échec de l'envoi. Veuillez réessayer."
   }
 }

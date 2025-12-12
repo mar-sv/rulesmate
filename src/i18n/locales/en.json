@@ -5,5 +5,41 @@
     "walkthrough": "Let's play through {{game}} together. Ready to start?",
     "setup": "I'll help you set up {{game}} step by step. Where should we begin?",
     "general": "How can I help you with {{game}} today?"
+  },
+  "landing": {
+    "tagline": "Board game help, instantly.",
+    "inputPlaceholder": "Which game?",
+    "start": "Start",
+    "notFound": "We don't have \"{{game}}\" yet",
+    "requestGame": "Request it via the feedback form below"
+  },
+  "intents": {
+    "rules": "Rules",
+    "rulesSubtitle": "Learn how to play",
+    "clarifications": "Clarifications",
+    "clarificationsSubtitle": "Quick answers",
+    "walkthrough": "Walkthrough",
+    "walkthroughSubtitle": "Step-by-step",
+    "setup": "Setup",
+    "setupSubtitle": "Get started fast"
+  },
+  "chat": {
+    "header": "Board game help, instantly.",
+    "assistant": "Assistant",
+    "inputPlaceholder": "Ask a question...",
+    "errorMessage": "Sorry, I encountered an error. Please try again.",
+    "tabs": {
+      "chat": "Chat",
+      "resources": "Resources"
+    }
+  },
+  "feedback": {
+    "prompt": "Found a bug? Have a suggestion? Let us know!",
+    "placeholder": "Share your feedback...",
+    "submit": "Submit",
+    "success": "Thank you!",
+    "successDescription": "Your feedback has been submitted.",
+    "error": "Error",
+    "errorDescription": "Failed to submit feedback. Please try again."
   }
 }

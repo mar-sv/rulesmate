@@ -5,5 +5,41 @@
     "walkthrough": "Låt oss spela igenom {{game}} tillsammans. Redo att börja?",
     "setup": "Jag hjälper dig att ställa upp {{game}} steg för steg. Var ska vi börja?",
     "general": "Hur kan jag hjälpa dig med {{game}} idag?"
+  },
+  "landing": {
+    "tagline": "Brädspelshjälp, direkt.",
+    "inputPlaceholder": "Vilket spel?",
+    "start": "Starta",
+    "notFound": "Vi har inte \"{{game}}\" ännu",
+    "requestGame": "Begär det via feedbackformuläret nedan"
+  },
+  "intents": {
+    "rules": "Regler",
+    "rulesSubtitle": "Lär dig spela",
+    "clarifications": "Förtydliganden",
+    "clarificationsSubtitle": "Snabba svar",
+    "walkthrough": "Genomgång",
+    "walkthroughSubtitle": "Steg för steg",
+    "setup": "Uppställning",
+    "setupSubtitle": "Kom igång snabbt"
+  },
+  "chat": {
+    "header": "Brädspelshjälp, direkt.",
+    "assistant": "Assistent",
+    "inputPlaceholder": "Ställ en fråga...",
+    "errorMessage": "Tyvärr uppstod ett fel. Försök igen.",
+    "tabs": {
+      "chat": "Chatt",
+      "resources": "Resurser"
+    }
+  },
+  "feedback": {
+    "prompt": "Hittat en bugg? Har du ett förslag? Berätta för oss!",
+    "placeholder": "Dela din feedback...",
+    "submit": "Skicka",
+    "success": "Tack!",
+    "successDescription": "Din feedback har skickats.",
+    "error": "Fel",
+    "errorDescription": "Kunde inte skicka feedback. Försök igen."
   }
 }

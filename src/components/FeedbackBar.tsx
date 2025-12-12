@@ -1,12 +1,12 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronUp, X, Send, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { submitFeedback } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 
 export const FeedbackBar = () => {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -24,8 +24,8 @@ export const FeedbackBar = () => {
       });
       
       toast({
-        title: "Feedback sent",
-        description: "Thank you for your feedback!",
+        title: t("feedback.success"),
+        description: t("feedback.successDescription"),
       });
       
       setMessage("");
@@ -33,14 +33,15 @@ export const FeedbackBar = () => {
     } catch (error) {
       console.error("Failed to submit feedback:", error);
       toast({
-        title: "Error",
-        description: "Failed to send feedback. Please try again.",
+        title: t("feedback.error"),
+        description: t("feedback.errorDescription"),
         variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
     }
   };
+
   return (
     <div className="border-t border-border bg-background shrink-0">
       <AnimatePresence mode="wait">
@@ -53,7 +54,7 @@ export const FeedbackBar = () => {
           >
             <div className="flex justify-between items-center mb-2">
               <span className="text-xs font-medium text-foreground">
-                Found a bug? Have a suggestion? Let us know!
+                {t("feedback.prompt")}
               </span>
               <button
                 onClick={() => setIsExpanded(false)}
@@ -73,7 +74,7 @@ export const FeedbackBar = () => {
                     handleSubmit();
                   }
                 }}
-                placeholder="Describe the issue..."
+                placeholder={t("feedback.placeholder")}
                 disabled={isSubmitting}
                 className="min-w-0 flex-1 h-10 px-3 text-base bg-input border border-border rounded-md focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50"
               />
@@ -94,7 +95,7 @@ export const FeedbackBar = () => {
             className="w-full py-2.5 px-4 flex items-center justify-center gap-2 text-xs font-medium text-background bg-[hsl(var(--feedback))] hover:brightness-110 transition-all"
           >
             <ChevronUp className="w-3 h-3" />
-            <span>Found a bug? Have a suggestion? Let us know!</span>
+            <span>{t("feedback.prompt")}</span>
           </motion.button>
         )}
       </AnimatePresence>

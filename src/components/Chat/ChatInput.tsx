@@ -1,4 +1,5 @@
 import { useState, FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { Send } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -8,6 +9,7 @@ interface ChatInputProps {
 }
 
 export const ChatInput = ({ onSend, disabled }: ChatInputProps) => {
+  const { t } = useTranslation();
   const [input, setInput] = useState("");
 
   const handleSubmit = (e: FormEvent) => {
@@ -25,7 +27,7 @@ export const ChatInput = ({ onSend, disabled }: ChatInputProps) => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask me anything about the game..."
+          placeholder={t("chat.inputPlaceholder")}
           disabled={disabled}
           className="flex-1 min-w-0 bg-bga-surface border border-border/50 rounded-2xl px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent-start/50 disabled:opacity-50"
         />
