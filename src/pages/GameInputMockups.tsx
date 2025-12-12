@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Check, X, AlertCircle, Gamepad2, MessageSquare, ArrowLeft, Loader2 } from "lucide-react";
+import { Check, X, ArrowLeft } from "lucide-react";
 
 const availableGames = [
   "Catan",
@@ -31,7 +31,6 @@ const GameInputMockups = () => {
   const [showResults2, setShowResults2] = useState(false);
   const [showResults3, setShowResults3] = useState(false);
   const [showResults4, setShowResults4] = useState(false);
-  const [isSearching2, setIsSearching2] = useState(false);
   const [selected1, setSelected1] = useState<string | null>(null);
   const [selected2, setSelected2] = useState<string | null>(null);
   const [selected3, setSelected3] = useState<string | null>(null);
@@ -51,31 +50,25 @@ const GameInputMockups = () => {
     );
   };
 
-  // Option 1: Show results immediately when typing (min 2 chars)
+  // All options use: Show after space or 3+ chars
   useEffect(() => {
-    if (input1.length >= 2 && !selected1) {
+    const hasSpace = input1.includes(" ");
+    if ((hasSpace || input1.length >= 3) && !selected1) {
       setShowResults1(true);
     } else {
       setShowResults1(false);
     }
   }, [input1, selected1]);
 
-  // Option 2: Show results after a pause (debounced)
   useEffect(() => {
-    if (input2.length >= 2 && !selected2) {
-      setIsSearching2(true);
-      const timer = setTimeout(() => {
-        setShowResults2(true);
-        setIsSearching2(false);
-      }, 500);
-      return () => clearTimeout(timer);
+    const hasSpace = input2.includes(" ");
+    if ((hasSpace || input2.length >= 3) && !selected2) {
+      setShowResults2(true);
     } else {
       setShowResults2(false);
-      setIsSearching2(false);
     }
   }, [input2, selected2]);
 
-  // Option 3: Show after space or 3+ chars
   useEffect(() => {
     const hasSpace = input3.includes(" ");
     if ((hasSpace || input3.length >= 3) && !selected3) {
@@ -85,7 +78,14 @@ const GameInputMockups = () => {
     }
   }, [input3, selected3]);
 
-  // Option 4: Show after Enter key (controlled separately)
+  useEffect(() => {
+    const hasSpace = input4.includes(" ");
+    if ((hasSpace || input4.length >= 3) && !selected4) {
+      setShowResults4(true);
+    } else {
+      setShowResults4(false);
+    }
+  }, [input4, selected4]);
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
@@ -99,36 +99,35 @@ const GameInputMockups = () => {
           Game Input Validation Mockups
         </h1>
         <p className="text-muted-foreground mb-8">
-          4 approaches for when to show matching games as the user types
+          4 visual approaches for game validation (all trigger after 3 chars or space)
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
-          {/* Option 1: Immediate (2+ characters) */}
+          {/* Mockup 1: Dropdown with highlight */}
           <div className="bg-card border border-border rounded-2xl p-6">
             <div className="flex items-center gap-2 mb-4">
               <span className="bg-accent-start/20 text-accent-start px-3 py-1 rounded-full text-sm font-medium">
-                Option 1
+                Mockup 1
               </span>
-              <span className="text-foreground font-semibold">Immediate (2+ chars)</span>
+              <span className="text-foreground font-semibold">Dropdown with Match Highlight</span>
             </div>
             <p className="text-muted-foreground text-sm mb-6">
-              Suggestions appear instantly after typing 2 characters. Fast but may feel jumpy.
+              Classic dropdown showing matches with the search term highlighted in the results.
             </p>
             
             <div className="space-y-4">
               {/* Desktop Preview */}
               <div className="border border-border/50 rounded-xl p-4 bg-background/50">
-                <span className="text-xs text-muted-foreground mb-2 block">Desktop — Type 2+ characters to see suggestions</span>
+                <span className="text-xs text-muted-foreground mb-2 block">Desktop</span>
                 <div className="relative max-w-md mx-auto">
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <input
                       type="text"
                       value={selected1 || input1}
                       onChange={(e) => { setInput1(e.target.value); setSelected1(null); }}
                       placeholder="Which game are you playing?"
-                      className="w-full bg-card border border-border rounded-xl pl-12 pr-12 py-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent-start/50"
+                      className="w-full bg-card border border-border rounded-xl px-5 py-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent-start/50"
                     />
                     {selected1 && (
                       <Check className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
@@ -136,7 +135,7 @@ const GameInputMockups = () => {
                   </div>
                   
                   <AnimatePresence>
-                    {showResults1 && (
+                    {showResults1 && !selected1 && (
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -145,14 +144,12 @@ const GameInputMockups = () => {
                       >
                         {hasNoMatch(input1) ? (
                           <div className="p-4 text-center">
-                            <AlertCircle className="w-8 h-8 text-orange-400 mx-auto mb-2" />
                             <p className="text-foreground font-medium mb-1">Game not found</p>
                             <p className="text-muted-foreground text-sm mb-3">
                               We don't have "{input1}" yet
                             </p>
-                            <button className="text-accent-start text-sm hover:underline flex items-center gap-1 mx-auto">
-                              <MessageSquare className="w-4 h-4" />
-                              Request this game
+                            <button className="text-accent-start text-sm hover:underline">
+                              Request this game →
                             </button>
                           </div>
                         ) : (
@@ -161,9 +158,8 @@ const GameInputMockups = () => {
                               <button
                                 key={game}
                                 onClick={() => { setSelected1(game); setInput1(game); }}
-                                className="w-full px-4 py-3 text-left text-foreground hover:bg-accent-start/10 transition-colors flex items-center gap-3"
+                                className="w-full px-4 py-3 text-left text-foreground hover:bg-accent-start/10 transition-colors"
                               >
-                                <Gamepad2 className="w-4 h-4 text-muted-foreground" />
                                 <span dangerouslySetInnerHTML={{
                                   __html: game.replace(
                                     new RegExp(`(${input1})`, 'gi'),
@@ -185,7 +181,7 @@ const GameInputMockups = () => {
               
               {/* Mobile Preview */}
               <div className="border border-border/50 rounded-xl p-4 bg-background/50">
-                <span className="text-xs text-muted-foreground mb-2 block">Mobile Preview</span>
+                <span className="text-xs text-muted-foreground mb-2 block">Mobile</span>
                 <div className="max-w-[280px] mx-auto">
                   <div className="relative">
                     <input
@@ -198,9 +194,8 @@ const GameInputMockups = () => {
                   </div>
                   <div className="mt-2 bg-card border border-border rounded-lg overflow-hidden text-sm shadow-lg">
                     {["Catan", "Catan: Seafarers", "Catan: Cities & Knights"].map((game) => (
-                      <div key={game} className="px-3 py-2.5 border-b border-border/50 last:border-0 text-foreground flex items-center gap-2">
-                        <Gamepad2 className="w-4 h-4 text-muted-foreground" />
-                        <span><strong className="text-accent-start">Cat</strong>an{game.replace("Catan", "")}</span>
+                      <div key={game} className="px-3 py-2.5 border-b border-border/50 last:border-0 text-foreground">
+                        <strong className="text-accent-start">Cat</strong>an{game.replace("Catan", "")}
                       </div>
                     ))}
                   </div>
@@ -209,138 +204,38 @@ const GameInputMockups = () => {
             </div>
           </div>
 
-          {/* Option 2: Debounced (after pause) */}
+          {/* Mockup 2: Inline validation with border color */}
           <div className="bg-card border border-border rounded-2xl p-6">
             <div className="flex items-center gap-2 mb-4">
               <span className="bg-accent-start/20 text-accent-start px-3 py-1 rounded-full text-sm font-medium">
-                Option 2
+                Mockup 2
               </span>
-              <span className="text-foreground font-semibold">Debounced (500ms pause)</span>
+              <span className="text-foreground font-semibold">Inline Validation + Border State</span>
             </div>
             <p className="text-muted-foreground text-sm mb-6">
-              Waits for user to stop typing before searching. Shows loading spinner. Less jumpy, slight delay.
+              Border color changes based on validation state. Error message appears inline below input.
             </p>
             
             <div className="space-y-4">
               {/* Desktop Preview */}
               <div className="border border-border/50 rounded-xl p-4 bg-background/50">
-                <span className="text-xs text-muted-foreground mb-2 block">Desktop — Pause typing to see suggestions</span>
+                <span className="text-xs text-muted-foreground mb-2 block">Desktop</span>
                 <div className="relative max-w-md mx-auto">
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <input
                       type="text"
                       value={selected2 || input2}
                       onChange={(e) => { setInput2(e.target.value); setSelected2(null); }}
                       placeholder="Which game are you playing?"
-                      className="w-full bg-card border border-border rounded-xl pl-12 pr-12 py-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent-start/50"
-                    />
-                    {isSearching2 && (
-                      <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground animate-spin" />
-                    )}
-                    {selected2 && (
-                      <Check className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
-                    )}
-                  </div>
-                  
-                  <AnimatePresence>
-                    {showResults2 && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-lg overflow-hidden z-50"
-                      >
-                        {hasNoMatch(input2) ? (
-                          <div className="p-4 text-center">
-                            <AlertCircle className="w-8 h-8 text-orange-400 mx-auto mb-2" />
-                            <p className="text-foreground font-medium mb-1">No matches for "{input2}"</p>
-                            <p className="text-muted-foreground text-sm mb-3">
-                              This game isn't in our library yet
-                            </p>
-                            <button className="gradient-accent px-4 py-2 rounded-lg text-foreground text-sm font-medium">
-                              Request this game
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="max-h-48 overflow-y-auto">
-                            <div className="px-3 py-2 bg-background/50 border-b border-border/30">
-                              <span className="text-xs text-muted-foreground">
-                                {filterGames(input2).length} games found
-                              </span>
-                            </div>
-                            {filterGames(input2).map((game) => (
-                              <button
-                                key={game}
-                                onClick={() => { setSelected2(game); setInput2(game); }}
-                                className="w-full px-4 py-3 text-left text-foreground hover:bg-accent-start/10 transition-colors flex items-center gap-3"
-                              >
-                                <Gamepad2 className="w-4 h-4 text-accent-start" />
-                                {game}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-                <p className="text-xs text-muted-foreground text-center mt-3">
-                  Type and pause to trigger search
-                </p>
-              </div>
-              
-              {/* Mobile Preview */}
-              <div className="border border-border/50 rounded-xl p-4 bg-background/50">
-                <span className="text-xs text-muted-foreground mb-2 block">Mobile — With loading state</span>
-                <div className="max-w-[280px] mx-auto space-y-2">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      className="w-full bg-card border border-border rounded-lg px-4 py-3 text-base text-foreground"
-                      value="Monop"
-                      readOnly
-                    />
-                    <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground animate-spin" />
-                  </div>
-                  <p className="text-xs text-muted-foreground text-center">Searching...</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Option 3: After space or 3+ chars */}
-          <div className="bg-card border border-border rounded-2xl p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="bg-accent-start/20 text-accent-start px-3 py-1 rounded-full text-sm font-medium">
-                Option 3
-              </span>
-              <span className="text-foreground font-semibold">After Space or 3+ Chars</span>
-            </div>
-            <p className="text-muted-foreground text-sm mb-6">
-              Shows suggestions after user types a space (indicating they're thinking) or after 3 characters.
-            </p>
-            
-            <div className="space-y-4">
-              {/* Desktop Preview */}
-              <div className="border border-border/50 rounded-xl p-4 bg-background/50">
-                <span className="text-xs text-muted-foreground mb-2 block">Desktop — Type 3 chars or press space</span>
-                <div className="relative max-w-md mx-auto">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={selected3 || input3}
-                      onChange={(e) => { setInput3(e.target.value); setSelected3(null); }}
-                      placeholder="Which game are you playing?"
-                      className={`w-full bg-card border-2 rounded-xl px-5 py-4 text-base text-foreground text-center placeholder:text-muted-foreground focus:outline-none transition-colors ${
-                        selected3 
+                      className={`w-full bg-card border-2 rounded-xl px-5 py-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none transition-colors ${
+                        selected2 
                           ? "border-green-500/50 bg-green-500/5" 
-                          : hasNoMatch(input3) && showResults3
+                          : hasNoMatch(input2) && showResults2
                             ? "border-red-500/50 bg-red-500/5"
                             : "border-border focus:border-accent-start/50"
                       }`}
                     />
-                    {selected3 && (
+                    {selected2 && (
                       <motion.div 
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
@@ -349,7 +244,7 @@ const GameInputMockups = () => {
                         <Check className="w-5 h-5 text-green-500" />
                       </motion.div>
                     )}
-                    {hasNoMatch(input3) && showResults3 && (
+                    {hasNoMatch(input2) && showResults2 && (
                       <motion.div 
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
@@ -361,7 +256,7 @@ const GameInputMockups = () => {
                   </div>
                   
                   <AnimatePresence>
-                    {showResults3 && !selected3 && filterGames(input3).length > 0 && (
+                    {showResults2 && !selected2 && filterGames(input2).length > 0 && (
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -369,13 +264,12 @@ const GameInputMockups = () => {
                         className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-lg overflow-hidden z-50"
                       >
                         <div className="max-h-48 overflow-y-auto">
-                          {filterGames(input3).map((game) => (
+                          {filterGames(input2).map((game) => (
                             <button
                               key={game}
-                              onClick={() => { setSelected3(game); setInput3(game); }}
-                              className="w-full px-4 py-3 text-left text-foreground hover:bg-accent-start/10 transition-colors flex items-center gap-3"
+                              onClick={() => { setSelected2(game); setInput2(game); }}
+                              className="w-full px-4 py-3 text-left text-foreground hover:bg-accent-start/10 transition-colors"
                             >
-                              <Gamepad2 className="w-4 h-4 text-accent-start" />
                               {game}
                             </button>
                           ))}
@@ -386,14 +280,14 @@ const GameInputMockups = () => {
                   
                   {/* Error state inline */}
                   <AnimatePresence>
-                    {hasNoMatch(input3) && showResults3 && (
+                    {hasNoMatch(input2) && showResults2 && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         className="text-center mt-3"
                       >
-                        <p className="text-red-400 text-sm mb-1">We don't have "{input3}" yet</p>
+                        <p className="text-red-400 text-sm mb-1">We don't have "{input2}" yet</p>
                         <button className="text-accent-start text-sm hover:underline">
                           Request it via feedback →
                         </button>
@@ -402,7 +296,7 @@ const GameInputMockups = () => {
                   </AnimatePresence>
                 </div>
                 <p className="text-xs text-muted-foreground text-center mt-3">
-                  Try typing "pan" or "ticket "
+                  Try typing "pan" or "gloom"
                 </p>
               </div>
               
@@ -413,7 +307,7 @@ const GameInputMockups = () => {
                   <div className="relative">
                     <input
                       type="text"
-                      className="w-full bg-card border-2 border-red-500/50 bg-red-500/5 rounded-lg px-4 py-3 text-base text-foreground text-center"
+                      className="w-full bg-card border-2 border-red-500/50 bg-red-500/5 rounded-lg px-4 py-3 text-base text-foreground"
                       value="Gloomhaven"
                       readOnly
                     />
@@ -428,83 +322,72 @@ const GameInputMockups = () => {
             </div>
           </div>
 
-          {/* Option 4: Explicit Search Button */}
+          {/* Mockup 3: Compact dropdown with count */}
           <div className="bg-card border border-border rounded-2xl p-6">
             <div className="flex items-center gap-2 mb-4">
               <span className="bg-accent-start/20 text-accent-start px-3 py-1 rounded-full text-sm font-medium">
-                Option 4
+                Mockup 3
               </span>
-              <span className="text-foreground font-semibold">Explicit Search (Enter/Button)</span>
+              <span className="text-foreground font-semibold">Dropdown with Match Count</span>
             </div>
             <p className="text-muted-foreground text-sm mb-6">
-              User must press Enter or click Search to validate. Most control, but extra step required.
+              Shows number of matches in dropdown header. Clean, informative feedback.
             </p>
             
             <div className="space-y-4">
               {/* Desktop Preview */}
               <div className="border border-border/50 rounded-xl p-4 bg-background/50">
-                <span className="text-xs text-muted-foreground mb-2 block">Desktop — Press Enter or click Search</span>
+                <span className="text-xs text-muted-foreground mb-2 block">Desktop</span>
                 <div className="relative max-w-md mx-auto">
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                      <input
-                        type="text"
-                        value={selected4 || input4}
-                        onChange={(e) => { setInput4(e.target.value); setSelected4(null); setShowResults4(false); }}
-                        onKeyDown={(e) => { if (e.key === "Enter" && input4.length >= 2) setShowResults4(true); }}
-                        placeholder="Enter game name..."
-                        className="w-full bg-card border border-border rounded-xl px-5 py-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent-start/50"
-                      />
-                      {selected4 && (
-                        <Check className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
-                      )}
-                    </div>
-                    <button 
-                      onClick={() => { if (input4.length >= 2) setShowResults4(true); }}
-                      className="gradient-accent px-6 py-4 rounded-xl text-foreground font-medium hover:opacity-90 transition-opacity"
-                    >
-                      Search
-                    </button>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={selected3 || input3}
+                      onChange={(e) => { setInput3(e.target.value); setSelected3(null); }}
+                      placeholder="Which game are you playing?"
+                      className="w-full bg-card border border-border rounded-xl px-5 py-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent-start/50"
+                    />
+                    {selected3 && (
+                      <Check className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
+                    )}
                   </div>
                   
                   <AnimatePresence>
-                    {showResults4 && !selected4 && (
+                    {showResults3 && !selected3 && (
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-lg overflow-hidden z-50"
                       >
-                        {hasNoMatch(input4) ? (
+                        {hasNoMatch(input3) ? (
                           <div className="p-4">
                             <div className="flex items-start gap-3 p-3 bg-orange-500/10 border border-orange-500/20 rounded-lg mb-3">
-                              <AlertCircle className="w-5 h-5 text-orange-400 mt-0.5" />
                               <div>
-                                <p className="text-foreground text-sm font-medium">"{input4}" not found</p>
+                                <p className="text-foreground text-sm font-medium">"{input3}" not found</p>
                                 <p className="text-muted-foreground text-xs mt-1">
                                   We're always adding new games. Use the feedback form to request this one!
                                 </p>
                               </div>
                             </div>
                             <button className="w-full gradient-accent py-2 rounded-lg text-foreground text-sm font-medium">
-                              Request "{input4}"
+                              Request "{input3}"
                             </button>
                           </div>
                         ) : (
                           <div className="max-h-48 overflow-y-auto">
-                            <div className="px-3 py-2 bg-background/50 border-b border-border/30">
+                            <div className="px-4 py-2 bg-background/50 border-b border-border/30">
                               <span className="text-xs text-muted-foreground">
-                                Found {filterGames(input4).length} matching games
+                                {filterGames(input3).length} game{filterGames(input3).length !== 1 ? 's' : ''} found
                               </span>
                             </div>
-                            {filterGames(input4).map((game) => (
+                            {filterGames(input3).map((game) => (
                               <button
                                 key={game}
-                                onClick={() => { setSelected4(game); setInput4(game); setShowResults4(false); }}
-                                className="w-full px-4 py-3 text-left text-foreground hover:bg-accent-start/10 transition-colors flex items-center gap-3"
+                                onClick={() => { setSelected3(game); setInput3(game); }}
+                                className="w-full px-4 py-3 text-left text-foreground hover:bg-accent-start/10 transition-colors"
                               >
-                                <Gamepad2 className="w-5 h-5 text-accent-start" />
-                                <span>{game}</span>
+                                {game}
                               </button>
                             ))}
                           </div>
@@ -514,31 +397,118 @@ const GameInputMockups = () => {
                   </AnimatePresence>
                 </div>
                 <p className="text-xs text-muted-foreground text-center mt-3">
-                  Type "wing" then press Enter or click Search
+                  Try typing "mon" or "xyz"
                 </p>
               </div>
               
               {/* Mobile Preview */}
               <div className="border border-border/50 rounded-xl p-4 bg-background/50">
-                <span className="text-xs text-muted-foreground mb-2 block">Mobile — Stacked layout</span>
-                <div className="max-w-[280px] mx-auto space-y-2">
+                <span className="text-xs text-muted-foreground mb-2 block">Mobile</span>
+                <div className="max-w-[280px] mx-auto">
                   <input
                     type="text"
                     className="w-full bg-card border border-border rounded-lg px-4 py-3 text-base text-foreground"
-                    value="Wingspan"
+                    value="Ticket"
                     readOnly
                   />
-                  <button className="w-full gradient-accent py-3 rounded-lg text-foreground text-sm font-medium">
-                    Search
-                  </button>
-                  <div className="bg-card border border-border rounded-lg overflow-hidden text-sm shadow-lg">
+                  <div className="mt-2 bg-card border border-border rounded-lg overflow-hidden text-sm shadow-lg">
                     <div className="px-3 py-2 bg-background/50 border-b border-border/30">
-                      <span className="text-xs text-muted-foreground">1 game found</span>
+                      <span className="text-xs text-muted-foreground">2 games found</span>
                     </div>
-                    <div className="px-3 py-2.5 text-foreground flex items-center gap-2">
-                      <Gamepad2 className="w-4 h-4 text-accent-start" />
-                      Wingspan
-                    </div>
+                    {["Ticket to Ride", "Ticket to Ride: Europe"].map((game) => (
+                      <div key={game} className="px-3 py-2.5 border-b border-border/50 last:border-0 text-foreground">
+                        {game}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Mockup 4: Floating pill notification */}
+          <div className="bg-card border border-border rounded-2xl p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="bg-accent-start/20 text-accent-start px-3 py-1 rounded-full text-sm font-medium">
+                Mockup 4
+              </span>
+              <span className="text-foreground font-semibold">Floating Pill Notification</span>
+            </div>
+            <p className="text-muted-foreground text-sm mb-6">
+              Compact pill-shaped dropdown. Minimal visual footprint, modern feel.
+            </p>
+            
+            <div className="space-y-4">
+              {/* Desktop Preview */}
+              <div className="border border-border/50 rounded-xl p-4 bg-background/50">
+                <span className="text-xs text-muted-foreground mb-2 block">Desktop</span>
+                <div className="relative max-w-md mx-auto">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={selected4 || input4}
+                      onChange={(e) => { setInput4(e.target.value); setSelected4(null); }}
+                      placeholder="Which game are you playing?"
+                      className="w-full bg-card border border-border rounded-full px-6 py-4 text-base text-foreground text-center placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent-start/50"
+                    />
+                    {selected4 && (
+                      <Check className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
+                    )}
+                  </div>
+                  
+                  <AnimatePresence>
+                    {showResults4 && !selected4 && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-card border border-border rounded-2xl shadow-lg overflow-hidden z-50 min-w-[250px]"
+                      >
+                        {hasNoMatch(input4) ? (
+                          <div className="p-4 text-center">
+                            <p className="text-foreground text-sm mb-2">No match for "{input4}"</p>
+                            <button className="text-accent-start text-sm hover:underline">
+                              Request this game
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="max-h-48 overflow-y-auto py-2">
+                            {filterGames(input4).map((game) => (
+                              <button
+                                key={game}
+                                onClick={() => { setSelected4(game); setInput4(game); }}
+                                className="w-full px-5 py-2.5 text-center text-foreground hover:bg-accent-start/10 transition-colors"
+                              >
+                                {game}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+                <p className="text-xs text-muted-foreground text-center mt-3">
+                  Try typing "azu" or "wing"
+                </p>
+              </div>
+              
+              {/* Mobile Preview */}
+              <div className="border border-border/50 rounded-xl p-4 bg-background/50">
+                <span className="text-xs text-muted-foreground mb-2 block">Mobile</span>
+                <div className="max-w-[280px] mx-auto">
+                  <input
+                    type="text"
+                    className="w-full bg-card border border-border rounded-full px-4 py-3 text-base text-foreground text-center"
+                    value="Azul"
+                    readOnly
+                  />
+                  <div className="mt-3 mx-auto bg-card border border-border rounded-xl overflow-hidden text-sm shadow-lg max-w-[200px]">
+                    {["Azul", "Azul: Summer Pavilion"].map((game) => (
+                      <div key={game} className="px-4 py-2.5 border-b border-border/50 last:border-0 text-foreground text-center">
+                        {game}
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -548,40 +518,35 @@ const GameInputMockups = () => {
 
         {/* Summary */}
         <div className="mt-12 bg-card border border-border rounded-2xl p-6">
-          <h2 className="text-xl font-bold text-foreground mb-4">UX Comparison</h2>
+          <h2 className="text-xl font-bold text-foreground mb-4">Visual Comparison</h2>
+          <p className="text-muted-foreground text-sm mb-4">
+            All mockups use the same trigger: suggestions appear after 3 characters or a space.
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 bg-background/50 rounded-xl">
-              <h3 className="font-semibold text-foreground mb-2">Option 1: Immediate</h3>
-              <p className="text-sm text-muted-foreground mb-2">Shows after 2 characters</p>
-              <p className="text-xs text-green-400">✓ Fastest feedback</p>
-              <p className="text-xs text-red-400">✗ Can feel jumpy</p>
+              <h3 className="font-semibold text-foreground mb-2">Mockup 1</h3>
+              <p className="text-sm text-muted-foreground mb-2">Highlight matches</p>
+              <p className="text-xs text-green-400">✓ Clear what matched</p>
+              <p className="text-xs text-muted-foreground">Standard approach</p>
             </div>
             <div className="p-4 bg-background/50 rounded-xl">
-              <h3 className="font-semibold text-foreground mb-2">Option 2: Debounced</h3>
-              <p className="text-sm text-muted-foreground mb-2">Waits 500ms after pause</p>
-              <p className="text-xs text-green-400">✓ Smooth, less jumpy</p>
-              <p className="text-xs text-red-400">✗ Slight delay</p>
+              <h3 className="font-semibold text-foreground mb-2">Mockup 2</h3>
+              <p className="text-sm text-muted-foreground mb-2">Border validation</p>
+              <p className="text-xs text-green-400">✓ Clear valid/invalid state</p>
+              <p className="text-xs text-muted-foreground">Strong feedback</p>
             </div>
             <div className="p-4 bg-background/50 rounded-xl">
-              <h3 className="font-semibold text-foreground mb-2">Option 3: Space/3 chars</h3>
-              <p className="text-sm text-muted-foreground mb-2">Triggers on space or length</p>
-              <p className="text-xs text-green-400">✓ User-intent based</p>
-              <p className="text-xs text-red-400">✗ Space behavior may confuse</p>
+              <h3 className="font-semibold text-foreground mb-2">Mockup 3</h3>
+              <p className="text-sm text-muted-foreground mb-2">Match count</p>
+              <p className="text-xs text-green-400">✓ Informative header</p>
+              <p className="text-xs text-muted-foreground">Clean & helpful</p>
             </div>
             <div className="p-4 bg-background/50 rounded-xl">
-              <h3 className="font-semibold text-foreground mb-2">Option 4: Explicit</h3>
-              <p className="text-sm text-muted-foreground mb-2">Requires Enter/button</p>
-              <p className="text-xs text-green-400">✓ Full user control</p>
-              <p className="text-xs text-red-400">✗ Extra step needed</p>
+              <h3 className="font-semibold text-foreground mb-2">Mockup 4</h3>
+              <p className="text-sm text-muted-foreground mb-2">Floating pill</p>
+              <p className="text-xs text-green-400">✓ Modern aesthetic</p>
+              <p className="text-xs text-muted-foreground">Minimal footprint</p>
             </div>
-          </div>
-          
-          <div className="mt-6 p-4 bg-accent-start/10 border border-accent-start/20 rounded-xl">
-            <p className="text-foreground font-medium mb-1">💡 Recommendation</p>
-            <p className="text-sm text-muted-foreground">
-              <strong>Option 2 (Debounced)</strong> is typically the best UX balance — it feels responsive but not chaotic. 
-              The loading spinner provides clear feedback that the system is working.
-            </p>
           </div>
         </div>
       </div>
