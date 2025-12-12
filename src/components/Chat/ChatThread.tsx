@@ -13,10 +13,9 @@ export interface Message {
 interface ChatThreadProps {
   messages: Message[];
   isTyping?: boolean;
-  onSourceClick?: (sourceId: string) => void;
 }
 
-export const ChatThread = ({ messages, isTyping, onSourceClick }: ChatThreadProps) => {
+export const ChatThread = ({ messages, isTyping }: ChatThreadProps) => {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,7 +33,7 @@ export const ChatThread = ({ messages, isTyping, onSourceClick }: ChatThreadProp
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3, delay: index * 0.05 }}
           >
-            <ChatBubble message={message} onSourceClick={onSourceClick} />
+            <ChatBubble message={message} />
           </motion.div>
         ))}
         {isTyping && (
