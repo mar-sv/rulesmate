@@ -29,6 +29,12 @@ const shortcuts = [{
 
 const Index = () => {
   const navigate = useNavigate();
+  const [shouldCrash, setShouldCrash] = useState(false);
+
+  // Test error boundary - remove after testing
+  if (shouldCrash) {
+    throw new Error("Test crash to verify ErrorBoundary");
+  }
   const [game, setGame] = useState("");
   const [selectedIntent, setSelectedIntent] = useState<string | null>(null);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
@@ -269,6 +275,16 @@ const Index = () => {
           scale: 0.95
         }} onClick={handleSubmit} disabled={!isValidGame} className="bg-accent-end px-10 sm:px-12 md:px-16 py-3 md:py-4 rounded-full text-foreground text-base md:text-lg font-bold shadow-glow disabled:opacity-50 disabled:cursor-not-allowed">
             Start
+          </motion.button>
+          {/* Test crash button - REMOVE AFTER TESTING */}
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            onClick={() => setShouldCrash(true)}
+            className="mt-4 px-4 py-2 text-xs text-red-400 border border-red-400/30 rounded-lg hover:bg-red-400/10"
+          >
+            🧪 Test Crash
           </motion.button>
         </div>
       </motion.div>
