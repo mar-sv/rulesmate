@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { ArrowLeft, MessageCircle, BookOpen } from "lucide-react";
 import { ChatThread, Message } from "@/components/Chat/ChatThread";
@@ -8,8 +9,10 @@ import { ResourcePanel } from "@/components/Resources/ResourcePanel";
 import { FeedbackBar } from "@/components/FeedbackBar";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { sendChatMessage, ChatMessage, getConversationId, startNewConversation } from "@/lib/api";
+import { getLanguageName } from "@/i18n";
 
 const Chat = () => {
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const { intent, game, gameId } = (location.state as { intent?: string; game?: string; gameId?: string }) || {};
@@ -27,18 +30,20 @@ const Chat = () => {
     console.log("Started new conversation:", newConversationId);
   }, []);
 
-  // Initialize with welcome message
+  // Initialize with welcome message based on intent and language
   useEffect(() => {
-    if (intent && game) {
+    if (game) {
+      const intentKey = intent || "general";
+      const welcomeContent = t(`welcome.${intentKey}`, { game });
       const welcomeMessage: Message = {
         id: "welcome",
         role: "assistant",
-        content: `Great! I'll help you with the ${intent} for ${game}. What would you like to know?`,
+        content: welcomeContent,
         timestamp: new Date(),
       };
       setMessages([welcomeMessage]);
     }
-  }, [intent, game]);
+  }, [intent, game, t]);
 
   const handleSendMessage = async (content: string) => {
     const userMessage: Message = {
@@ -63,6 +68,7 @@ const Chat = () => {
         conversation_id: conversationId,
         game: game || "Board Game",
         intent: intent || "general",
+        language: getLanguageName(i18n.language),
         messages: chatHistory,
       });
 

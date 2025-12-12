@@ -1,0 +1,9 @@
+{
+  "welcome": {
+    "rules": "Parcourons ensemble les règles de {{game}}. Que voulez-vous savoir?",
+    "clarifications": "Vous avez une question sur {{game}}? Je suis là pour vous aider.",
+    "walkthrough": "Jouons ensemble à {{game}}. Prêt à commencer?",
+    "setup": "Je vais vous aider à installer {{game}} étape par étape. Par où commencer?",
+    "general": "Comment puis-je vous aider avec {{game}} aujourd'hui?"
+  }
+}

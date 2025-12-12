@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, MessageCircleQuestion, Play, Settings, Check, X } from "lucide-react";
 import { FeedbackBar } from "@/components/FeedbackBar";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { searchGames, Game } from "@/lib/api";
 
 const shortcuts = [{
@@ -120,7 +121,12 @@ const Index = () => {
   };
   const isValidGame = selectedGame !== null;
   const showError = hasNoMatch && showResults === false && game.trim().length >= 3;
-  return <main className="h-[100dvh] flex flex-col overflow-hidden">
+  return <main className="h-[100dvh] flex flex-col overflow-hidden relative">
+      {/* Language Switcher - Top Right Corner */}
+      <div className="absolute top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
+      
       <motion.div initial={{
       opacity: 0
     }} animate={{

@@ -100,6 +100,7 @@ export interface ChatRequest {
   conversation_id: string;
   game: string;
   intent: string;
+  language: string; // "English", "Swedish", or "French"
   messages: ChatMessage[];
 }
 
@@ -129,12 +130,12 @@ export async function sendChatMessage(request: ChatRequest): Promise<ChatRespons
   // return response.json();
 
   // Mock implementation - remove when connecting to real API
-  console.log("Chat request with conversation_id:", request.conversation_id);
+  console.log("Chat request:", { conversation_id: request.conversation_id, language: request.language });
   await new Promise(resolve => setTimeout(resolve, 1500));
   
   const lastUserMessage = request.messages[request.messages.length - 1]?.content || "";
   return {
-    message: `This is a simulated response. In production, this would connect to your LLM backend trained on ${request.game} rulebook. Your question was: "${lastUserMessage}"`,
+    message: `[${request.language}] This is a simulated response. In production, this would connect to your LLM backend trained on ${request.game} rulebook. Your question was: "${lastUserMessage}"`,
   };
 }
 
