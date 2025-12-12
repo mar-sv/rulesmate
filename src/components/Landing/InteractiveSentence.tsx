@@ -53,7 +53,7 @@ export const InteractiveSentence = ({ onSubmit, selectedIntent, setSelectedInten
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="text-center space-y-8 px-2"
+      className="text-center space-y-4 sm:space-y-8 px-2"
     >
       <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1 sm:gap-2 md:gap-3">
         <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground">I want</span>
@@ -105,7 +105,7 @@ export const InteractiveSentence = ({ onSubmit, selectedIntent, setSelectedInten
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => onSubmit(selectedIntent, selectedGame)}
-        className="gradient-accent px-8 py-4 rounded-full text-foreground font-semibold text-lg shadow-glow hover:shadow-[0_0_30px_rgba(177,94,255,0.5)] transition-all"
+        className="gradient-accent px-6 py-3 sm:px-8 sm:py-4 rounded-full text-foreground font-semibold text-base sm:text-lg shadow-glow hover:shadow-[0_0_30px_rgba(177,94,255,0.5)] transition-all"
       >
         Let's Go
       </motion.button>
