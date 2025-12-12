@@ -10,6 +10,7 @@ import MockupComparison from "./pages/MockupComparison";
 import MobileUXMockups from "./pages/MobileUXMockups";
 import FeedbackMockups from "./pages/FeedbackMockups";
 import LandingMockups from "./pages/LandingMockups";
+import DesignVote from "./pages/DesignVote";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/mobile-ux" element={<MobileUXMockups />} />
             <Route path="/feedback-mockups" element={<FeedbackMockups />} />
             <Route path="/landing-mockups" element={<LandingMockups />} />
+            <Route path="/design-vote" element={<DesignVote />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
