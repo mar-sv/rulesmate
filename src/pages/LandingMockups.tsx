@@ -59,46 +59,57 @@ const Option1 = ({ isMobile }: { isMobile: boolean }) => (
   </div>
 );
 
-// Option 2: Minimal with Large Typography
-const Option2 = ({ isMobile }: { isMobile: boolean }) => (
-  <div className={`flex flex-col h-full ${isMobile ? 'px-3' : 'px-12'}`}>
-    {/* Top Section */}
-    <div className="flex-1 flex flex-col justify-center gap-4">
-      {/* Large Title */}
-      <div className="space-y-2">
-        <h1 className={`${isMobile ? 'text-2xl' : 'text-4xl'} font-extrabold leading-tight`}>
-          <span className="text-foreground">Need help</span>
-          <br />
-          <span className="gradient-text">with a game?</span>
+// Subtitles for intent buttons
+const shortcutDetails = {
+  Rules: "Learn how to play",
+  Clarifications: "Quick answers",
+  Walkthrough: "Step-by-step",
+  Setup: "Get started fast",
+};
+
+// Option 2A: Bold Typography with Branding + Subtitles
+const Option2A = ({ isMobile }: { isMobile: boolean }) => (
+  <div className={`flex flex-col h-full ${isMobile ? 'px-4' : 'px-12'}`}>
+    <div className="flex-1 flex flex-col justify-center gap-5">
+      {/* Brand */}
+      <div className="space-y-1">
+        <h1 className={`${isMobile ? 'text-2xl' : 'text-4xl'} font-extrabold`}>
+          <span className="gradient-text">Rules Mate</span>
         </h1>
-        <p className={`text-muted-foreground ${isMobile ? 'text-xs' : 'text-base'}`}>
-          Get instant answers about rules, setup, and strategies.
+        <p className={`text-muted-foreground ${isMobile ? 'text-xs' : 'text-sm'}`}>
+          Your AI Board Game Assistant
         </p>
       </div>
       
-      {/* Game Input - Full Width */}
-      <div className="space-y-3">
-        <input 
-          type="text" 
-          placeholder="Type your game name..."
-          className={`w-full bg-card border border-border rounded-xl px-4 ${isMobile ? 'py-2.5 text-sm' : 'py-3.5 text-base'} text-foreground placeholder:text-muted-foreground`}
-        />
-        
-        {/* Intent Pills */}
-        <div className={`flex ${isMobile ? 'flex-wrap' : ''} gap-2`}>
-          {shortcuts.map((shortcut) => {
-            const Icon = shortcut.icon;
-            return (
-              <button 
-                key={shortcut.label}
-                className={`flex items-center gap-1.5 ${isMobile ? 'px-3 py-1.5' : 'px-4 py-2'} bg-transparent border border-accent-start/40 rounded-full whitespace-nowrap hover:bg-accent-start/10 transition-all`}
-              >
-                <Icon className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-accent-start`} />
-                <span className={`${isMobile ? 'text-xs' : 'text-sm'} text-foreground`}>{shortcut.label}</span>
-              </button>
-            );
-          })}
-        </div>
+      {/* Main Heading */}
+      <h2 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold text-foreground leading-tight`}>
+        Need help with a game?
+      </h2>
+      
+      {/* Game Input */}
+      <input 
+        type="text" 
+        placeholder="Type your game name..."
+        className={`w-full bg-card border border-border rounded-xl px-4 ${isMobile ? 'py-2.5 text-sm' : 'py-3.5 text-base'} text-foreground placeholder:text-muted-foreground`}
+      />
+      
+      {/* Intent Buttons with Subtitles */}
+      <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-4 gap-3'}`}>
+        {shortcuts.map((shortcut) => {
+          const Icon = shortcut.icon;
+          return (
+            <button 
+              key={shortcut.label}
+              className={`flex flex-col items-center gap-1 ${isMobile ? 'p-2.5' : 'p-3'} bg-card/50 border border-border/50 rounded-xl hover:border-accent-start/50 hover:bg-card transition-all`}
+            >
+              <Icon className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-accent-start`} />
+              <span className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-foreground`}>{shortcut.label}</span>
+              <span className={`${isMobile ? 'text-[9px]' : 'text-xs'} text-muted-foreground`}>
+                {shortcutDetails[shortcut.label as keyof typeof shortcutDetails]}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
     
@@ -108,6 +119,110 @@ const Option2 = ({ isMobile }: { isMobile: boolean }) => (
         Start Chatting
       </button>
     </div>
+  </div>
+);
+
+// Option 2B: Stacked Branding with Horizontal Intent Pills
+const Option2B = ({ isMobile }: { isMobile: boolean }) => (
+  <div className={`flex flex-col h-full ${isMobile ? 'px-4' : 'px-12'}`}>
+    <div className="flex-1 flex flex-col justify-center gap-4">
+      {/* Large Stacked Brand */}
+      <div>
+        <p className={`${isMobile ? 'text-xs' : 'text-sm'} text-accent-start font-medium uppercase tracking-wider`}>
+          Welcome to
+        </p>
+        <h1 className={`${isMobile ? 'text-3xl' : 'text-5xl'} font-black gradient-text leading-none`}>
+          Rules Mate
+        </h1>
+      </div>
+      
+      {/* Subtitle */}
+      <p className={`text-foreground/80 ${isMobile ? 'text-sm' : 'text-lg'}`}>
+        Get instant answers about rules, setup, and strategies.
+      </p>
+      
+      {/* Game Input */}
+      <div className="space-y-2">
+        <label className={`${isMobile ? 'text-xs' : 'text-sm'} text-muted-foreground`}>What are you playing?</label>
+        <input 
+          type="text" 
+          placeholder="Enter game name..."
+          className={`w-full bg-card border border-border rounded-xl px-4 ${isMobile ? 'py-2.5 text-sm' : 'py-3.5 text-base'} text-foreground placeholder:text-muted-foreground`}
+        />
+      </div>
+      
+      {/* Stacked Intent List with descriptions */}
+      <div className="space-y-2">
+        {shortcuts.map((shortcut) => {
+          const Icon = shortcut.icon;
+          return (
+            <button 
+              key={shortcut.label}
+              className={`w-full flex items-center gap-3 ${isMobile ? 'px-3 py-2' : 'px-4 py-3'} bg-transparent border border-border/50 rounded-xl text-left hover:border-accent-start/50 hover:bg-card/30 transition-all`}
+            >
+              <Icon className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-accent-start shrink-0`} />
+              <div className="flex-1 min-w-0">
+                <span className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-foreground`}>{shortcut.label}</span>
+                <span className={`${isMobile ? 'text-[10px]' : 'text-xs'} text-muted-foreground ml-2`}>
+                  — {shortcutDetails[shortcut.label as keyof typeof shortcutDetails]}
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+    
+    {/* Bottom CTA */}
+    <div className="pb-4">
+      <button className={`w-full gradient-accent ${isMobile ? 'py-3 text-sm' : 'py-4 text-lg'} rounded-2xl text-foreground font-bold shadow-glow`}>
+        Let's Go
+      </button>
+    </div>
+  </div>
+);
+
+// Option 2C: Centered Minimal with Icon Grid
+const Option2C = ({ isMobile }: { isMobile: boolean }) => (
+  <div className={`flex flex-col items-center justify-center h-full ${isMobile ? 'px-4' : 'px-12'} text-center`}>
+    {/* Brand Centered */}
+    <div className="space-y-1 mb-4">
+      <h1 className={`${isMobile ? 'text-2xl' : 'text-4xl'} font-black gradient-text`}>Rules Mate</h1>
+      <p className={`${isMobile ? 'text-xs' : 'text-sm'} text-muted-foreground`}>Board game help, instantly.</p>
+    </div>
+    
+    {/* Game Input */}
+    <input 
+      type="text" 
+      placeholder="Which game?"
+      className={`w-full ${isMobile ? 'max-w-[200px]' : 'max-w-sm'} bg-card border border-border rounded-xl px-4 ${isMobile ? 'py-2.5 text-sm' : 'py-3 text-base'} text-foreground placeholder:text-muted-foreground text-center mb-4`}
+    />
+    
+    {/* Intent Grid with Subtitles */}
+    <div className={`grid grid-cols-2 gap-2 ${isMobile ? 'w-full max-w-[220px]' : 'w-full max-w-md'} mb-4`}>
+      {shortcuts.map((shortcut) => {
+        const Icon = shortcut.icon;
+        return (
+          <button 
+            key={shortcut.label}
+            className={`flex flex-col items-center gap-1 ${isMobile ? 'p-2' : 'p-3'} bg-card/30 border border-border/30 rounded-xl hover:border-accent-start/50 hover:bg-card/50 transition-all`}
+          >
+            <div className={`${isMobile ? 'w-7 h-7' : 'w-9 h-9'} rounded-lg bg-accent-start/20 flex items-center justify-center`}>
+              <Icon className={`${isMobile ? 'w-3.5 h-3.5' : 'w-4 h-4'} text-accent-start`} />
+            </div>
+            <span className={`${isMobile ? 'text-[10px]' : 'text-xs'} font-medium text-foreground`}>{shortcut.label}</span>
+            <span className={`${isMobile ? 'text-[8px]' : 'text-[10px]'} text-muted-foreground leading-tight`}>
+              {shortcutDetails[shortcut.label as keyof typeof shortcutDetails]}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+    
+    {/* CTA */}
+    <button className={`gradient-accent ${isMobile ? 'px-8 py-2.5 text-sm' : 'px-12 py-3 text-base'} rounded-full text-foreground font-bold shadow-glow`}>
+      Start
+    </button>
   </div>
 );
 
@@ -239,9 +354,9 @@ const LandingMockups = () => {
           <p className="text-muted-foreground text-sm">Mobile & Desktop side by side</p>
         </div>
         
-        <OptionRow title="Option 1: Glowing Cards" OptionComponent={Option1} />
-        <OptionRow title="Option 2: Bold Typography" OptionComponent={Option2} />
-        <OptionRow title="Option 3: Playful & Friendly" OptionComponent={Option3} />
+        <OptionRow title="Option 2A: Bold Branding + Grid" OptionComponent={Option2A} />
+        <OptionRow title="Option 2B: Stacked List" OptionComponent={Option2B} />
+        <OptionRow title="Option 2C: Centered Minimal" OptionComponent={Option2C} />
         
         <div className="text-center py-8">
           <p className="text-muted-foreground text-sm">Which design do you prefer?</p>
