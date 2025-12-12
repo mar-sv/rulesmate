@@ -59,7 +59,7 @@ const Chat = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col h-screen w-full overflow-hidden"
+      className="flex flex-col h-[100dvh] w-full overflow-hidden"
     >
       {/* Header - visible on all screens */}
       <div className="border-b border-border/50 p-4 flex items-center gap-4 bg-bga-surface/50 backdrop-blur shrink-0">
