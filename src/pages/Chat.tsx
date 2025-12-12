@@ -60,40 +60,44 @@ const Chat = () => {
       exit={{ opacity: 0 }}
       className="flex flex-col h-screen w-full overflow-hidden"
     >
-      <ResizablePanelGroup direction="horizontal" className="flex-1">
-        {/* Chat Column */}
-        <ResizablePanel defaultSize={60} minSize={40}>
-          <div className="flex flex-col h-full">
-            {/* Header */}
-            <div className="border-b border-border/50 p-4 flex items-center gap-4 bg-bga-surface/50 backdrop-blur">
-              <button
-                onClick={() => navigate("/")}
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-              <div>
-                <h1 className="text-lg font-semibold text-foreground">{game || "Board Game"}</h1>
-                <p className="text-sm text-muted-foreground capitalize">{intent || "Assistant"}</p>
-              </div>
+      {/* Header - visible on all screens */}
+      <div className="border-b border-border/50 p-4 flex items-center gap-4 bg-bga-surface/50 backdrop-blur shrink-0">
+        <button
+          onClick={() => navigate("/")}
+          className="text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </button>
+        <div className="flex-1">
+          <h1 className="text-lg font-semibold text-foreground">{game || "Board Game"}</h1>
+          <p className="text-sm text-muted-foreground capitalize">{intent || "Assistant"}</p>
+        </div>
+      </div>
+
+      {/* Mobile Layout */}
+      <div className="flex-1 flex flex-col md:hidden overflow-hidden">
+        <ChatThread messages={messages} isTyping={isTyping} />
+        <ChatInput onSend={handleSendMessage} disabled={isTyping} />
+      </div>
+
+      {/* Desktop Layout with Resizable Panels */}
+      <div className="hidden md:flex flex-1 overflow-hidden">
+        <ResizablePanelGroup direction="horizontal">
+          <ResizablePanel defaultSize={60} minSize={40}>
+            <div className="flex flex-col h-full">
+              <ChatThread messages={messages} isTyping={isTyping} />
+              <ChatInput onSend={handleSendMessage} disabled={isTyping} />
             </div>
+          </ResizablePanel>
 
-            {/* Chat Thread */}
-            <ChatThread messages={messages} isTyping={isTyping} />
+          <ResizableHandle withHandle />
 
-            {/* Chat Input */}
-            <ChatInput onSend={handleSendMessage} disabled={isTyping} />
-          </div>
-        </ResizablePanel>
+          <ResizablePanel defaultSize={40} minSize={25}>
+            <ResourcePanel game={game || "Board Game"} />
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
 
-        <ResizableHandle withHandle />
-
-        {/* Resource Panel */}
-        <ResizablePanel defaultSize={40} minSize={25}>
-          <ResourcePanel game={game || "Board Game"} />
-        </ResizablePanel>
-      </ResizablePanelGroup>
-      
       <FeedbackBar />
     </motion.div>
   );

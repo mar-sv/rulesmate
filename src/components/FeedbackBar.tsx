@@ -31,8 +31,8 @@ export const FeedbackBar = () => {
               </button>
             </div>
             <div className="flex gap-2">
-              <Textarea value={message} onChange={e => setMessage(e.target.value)} placeholder="Describe the issue or share your idea..." className="text-sm h-20 resize-none flex-1" />
-              <Button onClick={handleSubmit} size="sm" className="h-20 px-4">
+              <Textarea value={message} onChange={e => setMessage(e.target.value)} placeholder="Describe the issue or share your idea..." className="text-sm h-16 sm:h-20 resize-none flex-1" />
+              <Button onClick={handleSubmit} size="sm" className="h-16 sm:h-20 px-3 sm:px-4">
                 <Send className="w-4 h-4" />
               </Button>
             </div>
