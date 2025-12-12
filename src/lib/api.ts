@@ -1,8 +1,27 @@
 /**
- * API Service - Replace these placeholder URLs with your actual endpoints
+ * API Service for Rules Mate
+ * Backend: FastAPI
+ * 
+ * FastAPI endpoint examples:
+ * 
+ * @app.get("/games/search")
+ * async def search_games(q: str) -> list[GameResponse]:
+ *     ...
+ * 
+ * @app.post("/chat")
+ * async def chat(request: ChatRequest) -> ChatResponse:
+ *     ...
+ * 
+ * @app.post("/feedback")
+ * async def submit_feedback(request: FeedbackRequest) -> None:
+ *     ...
+ * 
+ * @app.get("/games/{game_id}/resources")
+ * async def get_resources(game_id: str) -> ResourcesResponse:
+ *     ...
  */
 
-const API_BASE_URL = "https://your-api.com"; // TODO: Replace with your API base URL
+const API_BASE_URL = "https://your-api.com"; // TODO: Replace with your FastAPI base URL
 
 // ============================================
 // GAME SEARCH API
