@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { ChatThread, Message } from "@/components/Chat/ChatThread";
 import { ChatInput } from "@/components/Chat/ChatInput";
 import { ResourcePanel } from "@/components/Resources/ResourcePanel";
+import { FeedbackBar } from "@/components/FeedbackBar";
 
 const Chat = () => {
   const location = useLocation();
@@ -56,33 +57,37 @@ const Chat = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex h-screen w-full overflow-hidden"
+      className="flex flex-col h-screen w-full overflow-hidden"
     >
-      {/* Chat Column */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <div className="border-b border-border/50 p-4 flex items-center gap-4 bg-bga-surface/50 backdrop-blur">
-          <button
-            onClick={() => navigate("/")}
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="text-lg font-semibold text-foreground">{game || "Board Game"}</h1>
-            <p className="text-sm text-muted-foreground capitalize">{intent || "Assistant"}</p>
+      <div className="flex flex-1 overflow-hidden">
+        {/* Chat Column */}
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <div className="border-b border-border/50 p-4 flex items-center gap-4 bg-bga-surface/50 backdrop-blur">
+            <button
+              onClick={() => navigate("/")}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div>
+              <h1 className="text-lg font-semibold text-foreground">{game || "Board Game"}</h1>
+              <p className="text-sm text-muted-foreground capitalize">{intent || "Assistant"}</p>
+            </div>
           </div>
+
+          {/* Chat Thread */}
+          <ChatThread messages={messages} isTyping={isTyping} />
+
+          {/* Chat Input */}
+          <ChatInput onSend={handleSendMessage} disabled={isTyping} />
         </div>
 
-        {/* Chat Thread */}
-        <ChatThread messages={messages} isTyping={isTyping} />
-
-        {/* Chat Input */}
-        <ChatInput onSend={handleSendMessage} disabled={isTyping} />
+        {/* Resource Panel */}
+        <ResourcePanel game={game || "Board Game"} />
       </div>
-
-      {/* Resource Panel */}
-      <ResourcePanel game={game || "Board Game"} />
+      
+      <FeedbackBar />
     </motion.div>
   );
 };
