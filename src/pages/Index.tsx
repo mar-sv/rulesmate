@@ -17,8 +17,8 @@ const Index = () => {
   const [selectedIntent, setSelectedIntent] = useState<string | null>(null);
 
   const handleSubmit = () => {
-    if (game.trim() && selectedIntent) {
-      navigate("/chat", { state: { intent: selectedIntent, game: game.trim() } });
+    if (game.trim()) {
+      navigate("/chat", { state: { intent: selectedIntent || "general", game: game.trim() } });
     }
   };
 
@@ -27,7 +27,7 @@ const Index = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && game.trim() && selectedIntent) {
+    if (e.key === "Enter" && game.trim()) {
       handleSubmit();
     }
   };
@@ -112,7 +112,7 @@ const Index = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleSubmit}
-            disabled={!game.trim() || !selectedIntent}
+            disabled={!game.trim()}
             className="gradient-accent px-10 sm:px-12 md:px-16 py-3 md:py-4 rounded-full text-foreground text-base md:text-lg font-bold shadow-glow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             Start
