@@ -9,6 +9,7 @@ import Chat from "./pages/Chat";
 import MockupComparison from "./pages/MockupComparison";
 import MobileUXMockups from "./pages/MobileUXMockups";
 import FeedbackMockups from "./pages/FeedbackMockups";
+import LandingMockups from "./pages/LandingMockups";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/mockups" element={<MockupComparison />} />
             <Route path="/mobile-ux" element={<MobileUXMockups />} />
             <Route path="/feedback-mockups" element={<FeedbackMockups />} />
+            <Route path="/landing-mockups" element={<LandingMockups />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
