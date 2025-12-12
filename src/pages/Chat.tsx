@@ -14,14 +14,19 @@ const Chat = () => {
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [highlightedSection, setHighlightedSection] = useState<string | null>(null);
 
-  // Initialize with welcome message
+  // Initialize with welcome message that includes a source reference for demo
   useEffect(() => {
     if (intent && game) {
       const welcomeMessage: Message = {
         id: "welcome",
         role: "assistant",
-        content: `Great! I'll help you with the ${intent} for ${game}. What would you like to know?`,
+        content: `Great! I'll help you with the ${intent} for ${game}. 
+
+Here's a quick tip: To win, you need to be the first player to reach 10 victory points (source p.1). You can earn points by building settlements and cities, or by having the longest road (source p.3).
+
+What would you like to know more about?`,
         timestamp: new Date(),
       };
       setMessages([welcomeMessage]);
@@ -39,17 +44,29 @@ const Chat = () => {
     setMessages((prev) => [...prev, userMessage]);
     setIsTyping(true);
 
-    // Simulate AI response
+    // Simulate AI response with source references
     setTimeout(() => {
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: `This is a simulated response. In production, this would connect to your LLM backend trained on ${game} rulebook. Your question was: "${content}"`,
+        content: `Great question! When a 7 is rolled, no one collects resources and the robber is activated (source p.4). 
+
+Additionally, any player with more than 7 cards must discard half of their hand. The active player then moves the robber to block a hex.
+
+For building costs, a settlement requires 1 Brick, 1 Lumber, 1 Wool, and 1 Grain (source p.5).`,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, aiMessage]);
       setIsTyping(false);
     }, 1500);
+  };
+
+  const handleSourceClick = (sourceId: string) => {
+    setHighlightedSection(sourceId);
+  };
+
+  const handleClearHighlight = () => {
+    setHighlightedSection(null);
   };
 
   return (
@@ -77,14 +94,22 @@ const Chat = () => {
           </div>
 
           {/* Chat Thread */}
-          <ChatThread messages={messages} isTyping={isTyping} />
+          <ChatThread 
+            messages={messages} 
+            isTyping={isTyping} 
+            onSourceClick={handleSourceClick}
+          />
 
           {/* Chat Input */}
           <ChatInput onSend={handleSendMessage} disabled={isTyping} />
         </div>
 
         {/* Resource Panel */}
-        <ResourcePanel game={game || "Board Game"} />
+        <ResourcePanel 
+          game={game || "Board Game"} 
+          highlightedSection={highlightedSection}
+          onClearHighlight={handleClearHighlight}
+        />
       </div>
       
       <FeedbackBar />

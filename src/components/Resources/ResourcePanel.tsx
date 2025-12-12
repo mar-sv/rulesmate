@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, FileText, Video } from "lucide-react";
-import { PDFViewer } from "./PDFViewer";
+import { RulebookViewer } from "./RulebookViewer";
 import { VideoCard } from "./VideoCard";
 
 interface ResourcePanelProps {
   game: string;
+  highlightedSection?: string | null;
+  onClearHighlight?: () => void;
 }
 
-export const ResourcePanel = ({ game }: ResourcePanelProps) => {
+export const ResourcePanel = ({ game, highlightedSection, onClearHighlight }: ResourcePanelProps) => {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
@@ -44,13 +46,17 @@ export const ResourcePanel = ({ game }: ResourcePanelProps) => {
             </div>
 
             <div className="p-4 space-y-6">
-              {/* PDF Section */}
+              {/* Rulebook Section */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-foreground/80">
                   <FileText className="w-5 h-5" />
                   <h3 className="font-semibold">Rulebook</h3>
                 </div>
-                <PDFViewer game={game} />
+                <RulebookViewer 
+                  game={game} 
+                  highlightedSection={highlightedSection}
+                  onClearHighlight={onClearHighlight}
+                />
               </div>
 
               {/* Video Section */}
