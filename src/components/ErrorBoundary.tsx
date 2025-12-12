@@ -30,79 +30,83 @@ class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
-          {/* Fallen Chessboard SVG */}
+          {/* Fallen King Chess Piece SVG */}
           <svg
-            viewBox="0 0 200 160"
-            className="w-64 h-48 mb-8"
-            style={{ transform: "rotate(-15deg)" }}
+            viewBox="0 0 200 140"
+            className="w-64 h-44 mb-8"
           >
-            {/* Chessboard - tilted/fallen effect */}
-            <g transform="translate(20, 30)">
-              {/* Board shadow */}
+            {/* Shadow under fallen king */}
+            <ellipse
+              cx="100"
+              cy="120"
+              rx="70"
+              ry="12"
+              fill="hsl(var(--accent) / 0.15)"
+            />
+            
+            {/* Fallen King piece - rotated to show it's toppled */}
+            <g transform="translate(100, 70) rotate(-75)">
+              {/* Base of king */}
+              <ellipse
+                cx="0"
+                cy="45"
+                rx="22"
+                ry="8"
+                fill="hsl(var(--accent))"
+              />
               <rect
-                x="15"
-                y="85"
-                width="140"
-                height="10"
-                rx="5"
-                fill="hsl(var(--accent) / 0.2)"
+                x="-22"
+                y="37"
+                width="44"
+                height="8"
+                fill="hsl(var(--accent))"
               />
               
-              {/* Board base */}
-              <rect
-                x="10"
-                y="10"
-                width="140"
-                height="80"
-                rx="4"
-                fill="hsl(var(--accent) / 0.3)"
-                stroke="hsl(var(--accent))"
-                strokeWidth="2"
+              {/* Body/stem */}
+              <path
+                d="M-16 37 Q-18 20 -12 10 L12 10 Q18 20 16 37 Z"
+                fill="hsl(var(--accent))"
               />
               
-              {/* Chess squares - 4x2 simplified grid */}
-              {[0, 1, 2, 3].map((col) =>
-                [0, 1].map((row) => (
-                  <rect
-                    key={`${col}-${row}`}
-                    x={20 + col * 30}
-                    y={20 + row * 30}
-                    width="28"
-                    height="28"
-                    fill={
-                      (col + row) % 2 === 0
-                        ? "hsl(var(--accent))"
-                        : "hsl(var(--accent) / 0.15)"
-                    }
-                    rx="2"
-                  />
-                ))
-              )}
+              {/* Collar/neck detail */}
+              <ellipse
+                cx="0"
+                cy="10"
+                rx="14"
+                ry="5"
+                fill="hsl(var(--accent) / 0.8)"
+              />
               
-              {/* Fallen pieces - simple circles/shapes */}
-              <circle cx="-5" cy="95" r="8" fill="hsl(var(--accent))" opacity="0.7" />
-              <circle cx="165" cy="100" r="6" fill="hsl(var(--accent))" opacity="0.5" />
+              {/* Head */}
+              <circle
+                cx="0"
+                cy="-5"
+                r="12"
+                fill="hsl(var(--accent))"
+              />
+              
+              {/* Crown cross */}
               <rect
-                x="170"
-                y="85"
-                width="8"
-                height="12"
+                x="-3"
+                y="-28"
+                width="6"
+                height="18"
                 rx="2"
                 fill="hsl(var(--accent))"
-                opacity="0.6"
-                transform="rotate(25, 174, 91)"
               />
-              <circle cx="25" cy="105" r="5" fill="hsl(var(--accent))" opacity="0.4" />
+              <rect
+                x="-9"
+                y="-22"
+                width="18"
+                height="6"
+                rx="2"
+                fill="hsl(var(--accent))"
+              />
             </g>
             
-            {/* X marks - game over feel */}
-            <g stroke="hsl(var(--accent))" strokeWidth="3" strokeLinecap="round" opacity="0.6">
-              <line x1="5" y1="20" x2="20" y2="35" />
-              <line x1="20" y1="20" x2="5" y2="35" />
-              
-              <line x1="175" y1="130" x2="190" y2="145" />
-              <line x1="190" y1="130" x2="175" y2="145" />
-            </g>
+            {/* Small decorative elements - scattered pieces feeling */}
+            <circle cx="35" cy="115" r="4" fill="hsl(var(--accent) / 0.4)" />
+            <circle cx="160" cy="110" r="3" fill="hsl(var(--accent) / 0.3)" />
           </svg>
 
           {/* Checkmate Text */}
