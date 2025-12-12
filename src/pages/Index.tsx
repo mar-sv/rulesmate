@@ -145,9 +145,9 @@ const Index = () => {
                 value={game}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                className={`w-full bg-card border-2 rounded-xl px-4 md:px-6 py-3 md:py-4 text-base md:text-lg text-foreground placeholder:text-muted-foreground text-center focus:outline-none transition-all ${
+              className={`w-full bg-card border-2 rounded-xl px-4 md:px-6 py-3 md:py-4 text-base md:text-lg text-foreground placeholder:text-muted-foreground text-center focus:outline-none transition-all ${
                   isValidGame 
-                    ? "border-green-500/50 bg-green-500/5" 
+                    ? "border-accent-start/50 bg-accent-start/5" 
                     : showError
                       ? "border-red-500/50 bg-red-500/5"
                       : "border-border focus:border-accent-start/50 focus:ring-2 focus:ring-accent-start/50"
@@ -159,7 +159,7 @@ const Index = () => {
                   animate={{ scale: 1 }}
                   className="absolute right-4 top-1/2 -translate-y-1/2"
                 >
-                  <Check className="w-5 h-5 text-green-500" />
+                  <Check className="w-5 h-5 text-accent-start" />
                 </motion.div>
               )}
               {showError && (
@@ -264,7 +264,7 @@ const Index = () => {
             whileTap={{ scale: 0.95 }}
             onClick={handleSubmit}
             disabled={!isValidGame}
-            className="gradient-accent px-10 sm:px-12 md:px-16 py-3 md:py-4 rounded-full text-foreground text-base md:text-lg font-bold shadow-glow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="bg-accent-start hover:bg-accent-end px-10 sm:px-12 md:px-16 py-3 md:py-4 rounded-full text-foreground text-base md:text-lg font-bold shadow-glow disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             Start
           </motion.button>
