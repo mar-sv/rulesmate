@@ -8,7 +8,7 @@ import { ChatInput } from "@/components/Chat/ChatInput";
 import { ResourcePanel } from "@/components/Resources/ResourcePanel";
 import { FeedbackBar } from "@/components/FeedbackBar";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
-import { sendChatMessage, ChatMessage, getConversationId, startNewConversation } from "@/lib/api";
+import { sendChatMessage, ChatMessage, getConversationId } from "@/lib/api";
 import { getLanguageName } from "@/i18n";
 
 const Chat = () => {
@@ -24,10 +24,9 @@ const Chat = () => {
 
   // Initialize conversation ID on mount
   useEffect(() => {
-    // Start a new conversation when entering chat page
-    const newConversationId = startNewConversation();
-    setConversationId(newConversationId);
-    console.log("Started new conversation:", newConversationId);
+    const existingConversationId = getConversationId();
+    setConversationId(existingConversationId);
+    console.log("Using conversation:", existingConversationId);
   }, []);
 
   // Initialize with welcome message based on intent and language

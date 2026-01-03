@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, MessageCircleQuestion, Play, Settings, Check, X } from "lucide-react";
 import { FeedbackBar } from "@/components/FeedbackBar";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { searchGames, Game } from "@/lib/api";
+import { searchGames, Game, submitSelectedGame } from "@/lib/api";
 
 const shortcuts = [
   { icon: BookOpen, intent: "rules" },
@@ -105,6 +105,9 @@ const Index = () => {
     setGame(gameItem.name);
     setShowResults(false);
     setSearchResults([]);
+    void submitSelectedGame(gameItem).catch((error) => {
+      console.error("Failed to submit selected game:", error);
+    });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

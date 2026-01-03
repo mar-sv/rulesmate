@@ -8,6 +8,10 @@
  * async def search_games(q: str) -> list[GameResponse]:
  *     ...
  * 
+ * @app.post("/games/selection")
+ * async def submit_selected_game(request: SelectedGameRequest) -> None:
+ *     ...
+ * 
  * @app.post("/chat")
  * async def chat(request: ChatRequest) -> ChatResponse:
  *     ...
@@ -22,7 +26,7 @@
 
 // API Base URL - uses environment variable if available, otherwise falls back to placeholder
 // For production: set VITE_API_BASE_URL in your environment
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://your-api.com";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/boardgame_rag";
 
 // ============================================
 // CONVERSATION SESSION
@@ -59,33 +63,65 @@ export interface Game {
   name: string;
 }
 
+const searchCache = new Map<string, Game[]>();
+let activeSearchController: AbortController | null = null;
+
 /**
  * Search for games matching the query
  * Endpoint: GET /games/search?q={query}
  */
 export async function searchGames(query: string): Promise<Game[]> {
-  // TODO: Replace with actual API call
-  // const response = await fetch(`${API_BASE_URL}/games/search?q=${encodeURIComponent(query)}`);
-  // if (!response.ok) throw new Error("Failed to search games");
-  // return response.json();
+  const q = query.trim();
+  if (q.length < 2) return [];
 
-  // Mock implementation - remove when connecting to real API
-  const mockGames = [
-    "Catan", "Catan: Seafarers", "Catan: Cities & Knights",
-    "Ticket to Ride", "Ticket to Ride: Europe",
-    "Monopoly", "Monopoly Deal",
-    "Scrabble", "Chess", "Pandemic", "Pandemic Legacy",
-    "Azul", "Azul: Summer Pavilion",
-    "Wingspan", "Codenames", "7 Wonders"
-  ];
-  
-  await new Promise(resolve => setTimeout(resolve, 100)); // Simulate network delay
-  
-  const filtered = mockGames
-    .filter(g => g.toLowerCase().includes(query.toLowerCase()))
-    .map(name => ({ id: name.toLowerCase().replace(/\s+/g, "-"), name }));
-  
-  return filtered;
+  const cached = searchCache.get(q);
+  if (cached) return cached;
+
+  activeSearchController?.abort();
+  const controller = new AbortController();
+  activeSearchController = controller;
+
+  const response = await fetch(
+    `${API_BASE_URL}/games/search?q=${encodeURIComponent(q)}`,
+    { signal: controller.signal }
+  );
+
+  if (!response.ok) throw new Error("Failed to search games");
+
+  const data = await response.json();
+  const rawGames: Array<{ title: string }> = data.games ?? data;
+  const games: Game[] = rawGames.map((game) => ({
+    id: game.title.toLowerCase().replace(/\s+/g, "-"),
+    name: game.title,
+  }));
+  searchCache.set(q, games);
+  return games;
+}
+
+// ============================================
+// GAME SELECTION API
+// ============================================
+export interface SelectedGameRequest {
+  game_id: string;
+  game_name: string;
+}
+
+/**
+ * Send selected game to backend
+ * Endpoint: POST /games/selection
+ */
+export async function submitSelectedGame(game: Game): Promise<void> {
+  const conversationId = getConversationId();
+  const response = await fetch(`${API_BASE_URL}/add_game_to_context`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      game_name: game.name,
+      session_id: conversationId,
+    }),
+  });
+
+  if (!response.ok) throw new Error("Failed to submit selected game");
 }
 
 // ============================================
@@ -119,24 +155,44 @@ export interface ChatResponse {
  *     intent: str
  *     messages: list[ChatMessage]
  */
-export async function sendChatMessage(request: ChatRequest): Promise<ChatResponse> {
-  // TODO: Replace with actual API call
-  // const response = await fetch(`${API_BASE_URL}/chat`, {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify(request),
-  // });
-  // if (!response.ok) throw new Error("Failed to send message");
-  // return response.json();
+// export async function sendChatMessage(request: ChatRequest): Promise<ChatResponse> {
+//   // TODO: Replace with actual API call
+//   // const response = await fetch(`${API_BASE_URL}/chat`, {
+//   //   method: "POST",
+//   //   headers: { "Content-Type": "application/json" },
+//   //   body: JSON.stringify(request),
+//   // });
+//   // if (!response.ok) throw new Error("Failed to send message");
+//   // return response.json();
 
-  // Mock implementation - remove when connecting to real API
-  console.log("Chat request:", { conversation_id: request.conversation_id, language: request.language });
-  await new Promise(resolve => setTimeout(resolve, 1500));
+//   // Mock implementation - remove when connecting to real API
+//   console.log("Chat request:", { conversation_id: request.conversation_id, language: request.language });
+//   await new Promise(resolve => setTimeout(resolve, 1500));
   
-  const lastUserMessage = request.messages[request.messages.length - 1]?.content || "";
-  return {
-    message: `[${request.language}] This is a simulated response. In production, this would connect to your LLM backend trained on ${request.game} rulebook. Your question was: "${lastUserMessage}"`,
-  };
+//   const lastUserMessage = request.messages[request.messages.length - 1]?.content || "";
+//   return {
+//     message: `[${request.language}] This is a simulated response. In production, this would connect to your LLM backend trained on ${request.game} rulebook. Your question was: "${lastUserMessage}"`,
+//   };
+// }
+
+export async function sendChatMessage(request: ChatRequest): Promise<ChatResponse> {
+  const lastUserMessage =
+    request.messages[request.messages.length - 1]?.content ?? "";
+
+  const conversationId = getConversationId();
+  const params = new URLSearchParams({
+    user_input: lastUserMessage,
+    session_id: conversationId,
+  });
+
+  const response = await fetch(`${API_BASE_URL}/chat?${params}`, {
+    method: "GET",
+  });
+
+  if (!response.ok) throw new Error("Failed to send message");
+
+  const data = await response.json();
+  return { message: data['answer'] };
 }
 
 // ============================================
@@ -194,3 +250,12 @@ export async function getGameResources(gameId: string): Promise<GameResources> {
     videoTitle: `How to Play ${gameId}`,
   };
 }
+
+
+
+
+
+
+
+
+
